@@ -1,0 +1,28 @@
+fig_ytrure_ypred:
+  NAME: "fig_ytrure_ypred"
+  root_dir: "./output/fig/"
+  fig_dir_path: "./output/fig/fig_ytrure_ypred"
+
+fig_beta_rho:
+  NAME: "fig_beta_rho"
+  fig_dir_path: "./output/fig/fig_beta_rho"
+
+fig_confusion_matrix:
+  NAME: "fig_confusion_matrix"
+  fig_dir_path: "./output/fig/fig_confusion_matrix"
+
+fig_active_neighbors_transprob:
+  NAME: "fig_active_neighbors_transprob"
+  fig_dir_path: "./output/fig/fig_active_neighbors_transprob"
+
+fig_k_loss:
+  NAME: "fig_k_loss"
+  fig_dir_path: "./output/fig/fig_k_loss"
+
+fig_k_distribution:
+  NAME: "fig_k_distribution"
+  fig_dir_path: "./output/fig/fig_k_distribution"
+
+fig_time_evolution:
+  NAME: "fig_time_evolution"
+  fig_dir_path: "./output/fig/fig_time_evolution"

@@ -1,0 +1,128 @@
+UAU:
+  NAME: "UAU"
+  STATES_MAP:
+    U: 0
+    A: 1
+  MAX_DIMENSION: 1
+  SEED_FREC: 0.1
+  EFF_AWARE: 2.0
+  MU: 0.1
+
+CompUAU:
+  NAME: "CompUAU"
+  STATES_MAP:
+    UU: 0
+    A1U: 1
+    UA2: 2
+    A1A2: 3
+  MAX_DIMENSION: 1
+  SEED_FREC_A1: 0.1
+  SEED_FREC_A2: 0.1
+  EFF_AWARE_A1: 2.0
+  EFF_AWARE_A2: 3.0
+  prime_A1: 0.0
+  prime_A2: 0.0
+  MU_A1: 0.1
+  MU_A2: 0.1
+
+CoopUAU:
+  NAME: "CoopUAU"
+  STATES_MAP:
+    UU: 0
+    A1U: 1
+    UA2: 2
+    A1A2: 3
+  MAX_DIMENSION: 1
+  SEED_FREC_A1: 0.1
+  SEED_FREC_A2: 0.1
+  EFF_AWARE_A1: 2.0
+  EFF_AWARE_A2: 3.0
+  prime_A1: 2.0
+  prime_A2: 2.0
+  MU_A1: 0.1
+  MU_A2: 0.1
+
+AsymUAU:
+  NAME: "AsymUAU"
+  STATES_MAP:
+    UU: 0
+    A1U: 1
+    UA2: 2
+    A1A2: 3
+  MAX_DIMENSION: 1
+  SEED_FREC_A1: 0.1
+  SEED_FREC_A2: 0.1
+  EFF_AWARE_A1: 2.0
+  EFF_AWARE_A2: 3.0
+  prime_A1: 0.
+  prime_A2: 2.0
+  MU_A1: 0.1
+  MU_A2: 0.1
+
+SCUAU:
+  NAME: "SCUAU"
+  STATES_MAP:
+    U: 0
+    A: 1
+  MAX_DIMENSION: 2
+  SEED_FREC: 0.1
+  EFF_AWARE: 2.0
+  EFF_AWARE_DELTA: 6.
+  MU: 0.1
+
+SCCompUAU:
+  NAME: "SCCompUAU"
+  STATES_MAP:
+    UU: 0
+    A1U: 1
+    UA2: 2
+    A1A2: 3
+  MAX_DIMENSION: 2
+  SEED_FREC_A1: 0.1
+  SEED_FREC_A2: 0.1
+  EFF_AWARE_A1: 2.
+  EFF_AWARE_A2: 3.
+  EFF_AWARE_DELTA_A1: 6.
+  EFF_AWARE_DELTA_A2: 8.
+  prime_A1: 0.0
+  prime_A2: 0.0
+  MU_A1: 0.1
+  MU_A2: 0.1
+
+SCCoopUAU:
+  NAME: "SCCoopUAU"
+  STATES_MAP:
+    UU: 0
+    A1U: 1
+    UA2: 2
+    A1A2: 3
+  MAX_DIMENSION: 2
+  SEED_FREC_A1: 0.5
+  SEED_FREC_A2: 0.5
+  EFF_AWARE_A1: 2.0
+  EFF_AWARE_A2: 2.0
+  EFF_AWARE_DELTA_A1: 6.
+  EFF_AWARE_DELTA_A2: 8.
+  prime_A1: 2.
+  prime_A2: 2.
+  MU_A1: 0.1
+  MU_A2: 0.1
+
+SCAsymUAU:
+  NAME: "SCAsymUAU"
+  STATES_MAP:
+    UU: 0
+    A1U: 1
+    UA2: 2
+    A1A2: 3
+  MAX_DIMENSION: 2
+  SEED_FREC_A1: 0.1
+  SEED_FREC_A2: 0.1
+  EFF_AWARE_A1: 2.0
+  EFF_AWARE_A2: 3.0
+  EFF_AWARE_DELTA_A1: 6.0
+  EFF_AWARE_DELTA_A2: 8.0
+  prime_A1: 0.0
+  prime_A2: 2.0
+  MU_A1: 0.1
+  MU_A2: 0.1

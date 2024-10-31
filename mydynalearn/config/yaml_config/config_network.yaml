@@ -1,0 +1,61 @@
+parent_group: 'network'
+
+ER:
+  NAME: 'ER'
+  NUM_NODES: 1000
+  MAX_DIMENSION: 1
+  AVG_K: 20
+
+SF:
+  NAME: 'SF'
+  NUM_NODES: 1000
+  MAX_DIMENSION: 1
+  AVG_K: 20
+  N0: 3
+  nlink: 3
+
+SCER:
+  NAME: 'SCER'
+  NUM_NODES: 1000
+  MAX_DIMENSION: 2
+  AVG_K: 20
+  AVG_K_DELTA: 8
+
+SCSF:
+  NAME: 'SCSF'
+  NUM_NODES: 1000
+  MAX_DIMENSION: 2
+  ntri: 1
+
+ToySCER:
+  NAME: 'ToySCER'
+  NUM_NODES: 8
+  MAX_DIMENSION: 2
+
+CONFERENCE:
+  NAME: 'CONFERENCE'
+  REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
+  REALNET_SOURCEDATA_FILENAME: 'conference.dat'
+  REALNET_NETDATA_FILENAME: 'conference.pkl'
+  MAX_DIMENSION: 2
+
+HIGHSCHOOL:
+  NAME: 'HIGHSCHOOL'
+  REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
+  REALNET_SOURCEDATA_FILENAME: 'high_school.csv'
+  REALNET_NETDATA_FILENAME: 'high_school.pkl'
+  MAX_DIMENSION: 2
+
+HOSPITAL:
+  NAME: 'HOSPITAL'
+  REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
+  REALNET_SOURCEDATA_FILENAME: 'hospital.dat'
+  REALNET_NETDATA_FILENAME: 'hospital.pkl'
+  MAX_DIMENSION: 2
+
+WORKPLACE:
+  NAME: 'WORKPLACE'
+  REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
+  REALNET_SOURCEDATA_FILENAME: 'workplace.dat'
+  REALNET_NETDATA_FILENAME: 'workplace.pkl'
+  MAX_DIMENSION: 2
