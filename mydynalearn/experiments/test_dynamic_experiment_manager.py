@@ -2,13 +2,13 @@
 from mydynalearn.config import ConfigDynamicTestingExp
 from mydynalearn.experiments import ExperimentTestDynamic
 from mydynalearn.logger import Log
-from mydynalearn.util.params_dealer import PasramsDealer
+from mydynalearn.util.params_dealer import ParamsDealer
 
 class TestDynamicExperimentManager():
     def __init__(self, fix_config_dict, params_dict):
         self.fix_config_dict = fix_config_dict
         self.logger = Log("TestDynamicExperimentManager")
-        self.params = PasramsDealer.assemble_test_dynamics_params(params_dict)
+        self.params = ParamsDealer.assemble_test_dynamics_params(params_dict)
         self.root_dir = r"./output/"
     def get_train_exp(self,network, dynamics):
         '''通过参数获得实验对象

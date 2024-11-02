@@ -2,7 +2,7 @@ import os
 import random
 import torch
 import numpy as np
-from mydynalearn.config.yaml_config.config import Config
+from mydynalearn.config.yaml_config.configfile import ConfigFile
 
 
 
@@ -18,10 +18,10 @@ class ConfigDynamicTestingExp:
         torch.manual_seed(seed)
         random.seed(seed)
         np.random.seed(seed)
-        config_network = Config.get_config_network()
-        config_dynamic = Config.get_config_dynamic()
-        config_dataset = Config.get_config_dataset()
-        config_drawer = Config.get_config_drawer()
+        config_network = ConfigFile.get_config_network()
+        config_dynamic = ConfigFile.get_config_dynamic()
+        config_dataset = ConfigFile.get_config_dataset()
+        config_drawer = ConfigFile.get_config_drawer()
 
 
         self.network = config_network[network]

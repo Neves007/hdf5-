@@ -13,7 +13,7 @@ class Dao:
         - parent_group: 父组的名称。
         - cur_group_name: 当前组的名称。
         """
-        self.data_file = "dataset.h5"  # 数据文件名称
+        self.data_file = "output/dataset.h5"  # 数据文件名称
         self.parent_group = parent_group  # 父组的名称
         self.cur_group = cur_group_name  # 当前组的名称
         self.group_path = self.get_group_path()  # 生成组的绝对路径

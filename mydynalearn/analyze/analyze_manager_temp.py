@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from mydynalearn.analyze.analyzer import runModelOnTestData,epochAnalyzer
-from mydynalearn.config import Config
+from mydynalearn.config import ConfigFile
 import os
 
 class AnalyzeManager():
@@ -10,7 +10,7 @@ class AnalyzeManager():
 
         :param train_experiment_manager:
         '''
-        config_analyze = Config.get_config_analyze()
+        config_analyze = ConfigFile.get_config_analyze()
         self.config = config_analyze['default']
         self.train_experiment_manager = train_experiment_manager
         self.epoch_analyzer = epochAnalyzer(self.config)

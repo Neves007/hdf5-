@@ -1,11 +1,27 @@
 default:
-  NAME: "ExampleModel" # This should be set to the actual model name used.    # This should be set to the actual number of states used.
+  model_dir: 'output/model'
+
+
+GAT:
+  NAME: "GAT" # This should be set to the actual model name used.    # This should be set to the actual number of states used.
   EPOCHS: 30
   batch_size: 1
   heads: 2
   in_channels: [0, 32, 32] # NUM_STATES is used here.
   gnn_channels: 32
   out_channels: [32, 32, 32, 0] # NUM_STATES is used here.
+  concat: False
+  bias: True
+  self_attention: True
+
+SCAT:
+  NAME: "SCAT" # This should be set to the actual model name used.    # This should be set to the actual number of states used.
+  EPOCHS: 30
+  batch_size: 1
+  heads: 2
+  in_channels: [ 0, 32, 32 ] # NUM_STATES is used here.
+  gnn_channels: 32
+  out_channels: [ 32, 32, 32, 0 ] # NUM_STATES is used here.
   concat: False
   bias: True
   self_attention: True

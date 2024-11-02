@@ -31,8 +31,8 @@ from mydynalearn.analyze import *
 from mydynalearn.drawer import MatplotController
 
 ''' 所有参数
-    "grpah_network": ["ER", "SF"],
-    "grpah_dynamics": ["UAU", "CompUAU", "CoopUAU", "AsymUAU"],
+    "graph_network": ["ER", "SF"],
+    "graph_dynamics": ["UAU", "CompUAU", "CoopUAU", "AsymUAU"],
 
     "simplicial_network": ["SCER", "SCSF", "CONFERENCE", "HIGHSCHOOL", "HOSPITAL", "WORKPLACE"],
     "simplicial_dynamics": ["SCUAU", "SCCompUAU", "SCCoopUAU", "SCAsymUAU"],
@@ -41,9 +41,9 @@ from mydynalearn.drawer import MatplotController
     "IS_WEIGHT": [False]
 '''
 
-params = {
-    "grpah_network": ["ER"],
-    "grpah_dynamics": ["UAU"],
+params_exp_dict = {
+    "graph_network": ["ER"],
+    "graph_dynamics": ["UAU"],
 
     "model": ["GAT", "SAT"],  # 至少选一个
     "IS_WEIGHT": [False]
@@ -52,11 +52,10 @@ fix_config = {
     "NUM_SAMPLES": 10000,
     "TESTSET_TIMESTEP": 10,
     "EPOCHS": 30,
-    "DEVICE": torch.device('cuda'),
+    "DEVICE": 'cuda',
 }
 
 if __name__ == '__main__':
-    # # 训练
-    train_params = PasramsDealer.assemble_train_params(params)  # 实验的设置
-    train_experiment_manager = TrainExperimentManager(fix_config, train_params)  # 返回实验对象
+    # 跑实验
+    train_experiment_manager = ExperimentManager(params_exp_dict, fix_config)  # 返回实验对象
     train_experiment_manager.run()

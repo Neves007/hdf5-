@@ -15,9 +15,9 @@ from tqdm import tqdm
 from mydynalearn.model.getter import get as get_attmodel
 from mydynalearn.model.batch_task import BatchTask
 from mydynalearn.logger import Log
-
-class EpochTasks():
-    def __init__(self, config):
+from Dao import DataHandler
+class EpochTasks(DataHandler):
+    def __init__(self, config, epoch_index):
         self.config = config
         self.logger = Log("EpochTasks")
         self.EPOCHS = config.model.EPOCHS

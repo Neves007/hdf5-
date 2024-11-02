@@ -1,63 +1,45 @@
 import itertools
-class PasramsDealer:
-    def __init__(self,params):
-        params = params
-        
-    @staticmethod
-    def assemble_train_params(params, only_higher_order=False):
-        ''' 通过给定的参数整合实验列表
 
-        :param only_higher_order: 是否只包含高阶网络
-        :return:
-        '''
-        train_params_graph = []
-        train_params_simplex = []
 
-        if "grpah_network" in params:
-            assert "grpah_dynamics" in params
-            train_params_graph = list(
-                itertools.product(
-                    params["grpah_network"],
-                    params["grpah_dynamics"],
-                    params["model"],
-                    params["IS_WEIGHT"]))
-        if "simplicial_network" in params:
-            assert "simplicial_dynamics" in params
-            train_params_simplex = list(
-                itertools.product(
-                    params["simplicial_network"],
-                    params["simplicial_dynamics"],
-                    params["model"],
-                    params["IS_WEIGHT"]))
-        if only_higher_order:
-            train_params = train_params_simplex
-        else:
-            train_params = train_params_graph + train_params_simplex
-        return train_params
-    @staticmethod
-    def assemble_test_dynamics_params(params, only_higher_order=False):
-        ''' 通过给定的参数整合实验列表
+class ParamsDealer:
+    def __init__(self, params):
+        self.params = params  # 内聚性增强：所有参数相关信息在初始化时加载一次
 
-        :param only_higher_order: 是否只包含高阶网络
-        :return:
-        '''
-        train_params_graph = []
-        train_params_simplex = []
+    def _generate_combinations(self, network_key, dynamics_key):
+        """生成给定网络和动态类型的参数组合，动态检查其他键的存在性并决定是否加入组合"""
+        if network_key in self.params and dynamics_key in self.params:
+            # 动态构建需要排列的参数列表，确保键存在时才添加
+            param_list = [
+                self.params[network_key],
+                self.params[dynamics_key]
+            ]
+            if "model" in self.params:
+                param_list.append(self.params["model"])
+            if "IS_WEIGHT" in self.params:
+                param_list.append(self.params["IS_WEIGHT"])
 
-        if "grpah_network" in params:
-            assert "grpah_dynamics" in params
-            train_params_graph = list(
-                itertools.product(
-                    params["grpah_network"],
-                    params["grpah_dynamics"]))
-        if "simplicial_network" in params:
-            assert "simplicial_dynamics" in params
-            train_params_simplex = list(
-                itertools.product(
-                    params["simplicial_network"],
-                    params["simplicial_dynamics"]))
-        if only_higher_order:
-            train_params = train_params_simplex
-        else:
-            train_params = train_params_graph + train_params_simplex
-        return train_params
+            return list(itertools.product(*param_list))
+
+        return []
+
+    def get_graph_params(self):
+        """获取图网络的参数组合"""
+        params_graph = self._generate_combinations("graph_network", "graph_dynamics")
+        return params_graph
+
+    def get_simplex_params(self):
+        """获取高阶网络的参数组合"""
+        params_simplex = self._generate_combinations("simplicial_network", "simplicial_dynamics")
+        return params_simplex
+
+    def get_parse_params(self):
+        """根据参数配置整合实验列表。
+
+        :param only_higher_order: 是否只包含高阶网络。
+        :return: 参数组合的列表。
+        """
+        params_graph = self.get_graph_params()
+        params_simplex = self.get_simplex_params()
+
+        # 根据标志选择返回高阶或全部组合
+        return params_graph + params_simplex

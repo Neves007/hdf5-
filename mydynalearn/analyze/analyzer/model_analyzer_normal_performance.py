@@ -1,6 +1,6 @@
 from mydynalearn.dataset import *
 from mydynalearn.analyze.utils.data_handler import *
-from mydynalearn.config import Config
+from mydynalearn.config import ConfigFile
 import os
 import pickle
 from mydynalearn.logger import Log

@@ -12,7 +12,7 @@ from mydynalearn.logger import Log
 from mydynalearn.util.lazy_loader import PickleLazyLoader
 from Dao import DataHandler
 
-class DynamicDataset(Dataset,DataHandler):
+class PeriodicDateset(DataHandler):
     '''数据集类
     通过网络network和dynamics来说生成动力学数据集
 
@@ -22,18 +22,13 @@ class DynamicDataset(Dataset,DataHandler):
     '''
     def __init__(self, config) -> None:
         self.config = config
-        self.logger = Log("DynamicDataset")
         self.dataset_config = config.dataset
-        self.NUM_SAMPLES = self.dataset_config.NUM_SAMPLES
-        self.TIME_EVOLUTION_STEPS = self.dataset_config.TIME_EVOLUTION_STEPS
-        self.T_INIT = self.dataset_config.T_INIT
-        self.DEVICE = self.config.DEVICE
-        self.network = get_network(self.config)
-        self.dynamics = get_dynamics(self.config)
+        self.logger = Log("DynamicDataset")
         self.init_metadata()
         parent_group = "dataset/training_evolution"
         cur_group = f"{self.metadata['NETWORK_NAME']}_{self.metadata['DYNAMIC_NAME']}"
         DataHandler.__init__(self, parent_group, cur_group)
+
 
     def init_metadata(self):
         metadata = {}
@@ -44,23 +39,13 @@ class DynamicDataset(Dataset,DataHandler):
         metadata['IS_WEIGHT'] = self.dataset_config['IS_WEIGHT']
         self.set_metadata(metadata)
 
-    def __len__(self) -> int:
-        return self.NUM_SAMPLES
-    def __getitem__(self, index):
-        x0 = self.x0_T[index]
-        y_ob = self.y_ob_T[index]
-        y_true = self.y_true_T[index]
-        weight = self.weight_T[index]
-        return x0, y_ob, y_true, weight
-
-
-
-    def _partition_dataSet(self):
-        test_size = self.config.dataset.NUM_TEST
-        val_size = int((len(self) - test_size) / 2)
-        train_size = len(self) - test_size - val_size
-        train_set, val_set, test_set = torch.utils.data.random_split(self, [train_size, val_size, test_size])
-        return train_set, val_set, test_set
+    def init_attributes(self):
+        self.NUM_SAMPLES = self.dataset_config.NUM_SAMPLES
+        self.T_INIT = self.dataset_config.T_INIT
+        self.DEVICE = self.config.DEVICE
+        self.network = get_network(self.config)
+        self.network.run()
+        self.dynamics = get_dynamics(self.config)
 
     def _init_dataset(self):
         assert self.network.MAX_DIMENSION == self.dynamics.MAX_DIMENSION
@@ -139,6 +124,7 @@ class DynamicDataset(Dataset,DataHandler):
         self.set_dataset(dataset)
 
     def run(self):
-        if self.dataset.get_build_necessity():
+        if self.get_build_necessity():
+            self.init_attributes()
             self.build_dataset()
             self.save()

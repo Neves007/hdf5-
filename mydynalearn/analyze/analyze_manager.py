@@ -1,5 +1,5 @@
 from mydynalearn.analyze.analyzer.exp_models_analyzer import ExpModelsAnalyzer
-from mydynalearn.config import Config
+from mydynalearn.config import ConfigFile
 import os
 import pandas as pd
 from mydynalearn.logger import Log
@@ -12,7 +12,7 @@ class AnalyzeManager():
         初始化 AnalyzeManager
         :param exp_generator: 提供实验生成器的管理对象
         """
-        config_analyze = Config.get_config_analyze()
+        config_analyze = ConfigFile.get_config_analyze()
         self.logger = Log("AnalyzeManager")
         self.indent=indent
         self.config = config_analyze['default']

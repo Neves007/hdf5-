@@ -52,7 +52,7 @@ class ER(Network):
     def _update_topology_info(self):
         self.AVG_K = 2 * len(self.edges) / self.NUM_NODES
 
-    def build(self):
+    def build_dataset(self):
         nodes = torch.arange(self.NUM_NODES)
         self.__setattr__("nodes", nodes)
         NUM_EDGES = int(self.AVG_K * self.NUM_NODES / 2)

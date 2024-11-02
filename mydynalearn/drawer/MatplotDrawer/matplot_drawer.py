@@ -22,7 +22,7 @@ class MatplotDrawer():
         self.title_fs = 16
         self.axis_lable_fs = 14
         self.legend_fs = 13
-        self.config_drawer = Config.get_config_drawer()
+        self.config_drawer = ConfigFile.get_config_drawer()
         pass
 
     def save_fig(self):

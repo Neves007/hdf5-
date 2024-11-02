@@ -1,13 +1,13 @@
 from mydynalearn.dataset import *
 from mydynalearn.analyze.utils.data_handler import *
-from mydynalearn.config import Config
+from mydynalearn.config import ConfigFile
 
 from .model_analyzer import ModelAnalyzer
 from mydynalearn.util.lazy_loader import PickleLazyLoader
 
 
 class ModelAnalyzerTimeEvolution(PickleLazyLoader, ModelAnalyzer):
-    config = Config.get_config_analyze()['default']
+    config = ConfigFile.get_config_analyze()['default']
     def __init__(self, config, exp, epoch_index):
         """
         初始化 ModelAnalyzer

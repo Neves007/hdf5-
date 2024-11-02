@@ -5,7 +5,7 @@ import torch
 import numpy as np
 from easydict import EasyDict as edict
 
-class Config:
+class ConfigFile:
     work_dir_path = 'mydynalearn/config/yaml_config/'
 
     config_analyze_file_name = 'config_analyze.yaml'
@@ -18,42 +18,42 @@ class Config:
 
     @staticmethod
     def get_config_analyze():
-        with open(os.path.join(Config.work_dir_path, Config.config_analyze_file_name), 'r') as file:
+        with open(os.path.join(ConfigFile.work_dir_path, ConfigFile.config_analyze_file_name), 'r') as file:
             config = edict(yaml.safe_load(file))
         return config
 
     @staticmethod
     def get_config_dataset():
-        with open(os.path.join(Config.work_dir_path, Config.config_dataset_file_name), 'r') as file:
+        with open(os.path.join(ConfigFile.work_dir_path, ConfigFile.config_dataset_file_name), 'r') as file:
             config = edict(yaml.safe_load(file))
         return config
 
     @staticmethod
     def get_config_drawer():
-        with open(os.path.join(Config.work_dir_path, Config.config_drawer_file_name), 'r') as file:
+        with open(os.path.join(ConfigFile.work_dir_path, ConfigFile.config_drawer_file_name), 'r') as file:
             config = edict(yaml.safe_load(file))
         return config
 
     @staticmethod
     def get_config_dynamic():
-        with open(os.path.join(Config.work_dir_path, Config.config_dynamic_file_name), 'r') as file:
+        with open(os.path.join(ConfigFile.work_dir_path, ConfigFile.config_dynamic_file_name), 'r') as file:
             config = edict(yaml.safe_load(file))
         return config
 
     @staticmethod
     def get_config_model():
-        with open(os.path.join(Config.work_dir_path, Config.config_model_file_name), 'r') as file:
+        with open(os.path.join(ConfigFile.work_dir_path, ConfigFile.config_model_file_name), 'r') as file:
             config = edict(yaml.safe_load(file))
         return config
 
     @staticmethod
     def get_config_network():
-        with open(os.path.join(Config.work_dir_path, Config.config_network_file_name), 'r') as file:
+        with open(os.path.join(ConfigFile.work_dir_path, ConfigFile.config_network_file_name), 'r') as file:
             config = edict(yaml.safe_load(file))
         return config
 
     @staticmethod
     def get_config_optimizer():
-        with open(os.path.join(Config.work_dir_path, Config.config_optimizer_file_name), 'r') as file:
+        with open(os.path.join(ConfigFile.work_dir_path, ConfigFile.config_optimizer_file_name), 'r') as file:
             config = edict(yaml.safe_load(file))
         return config

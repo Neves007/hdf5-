@@ -1,4 +1,6 @@
 import os
+import pickle
+
 import torch
 import numpy as np
 from Dao.dao import Dao
@@ -8,6 +10,8 @@ class DataHandler():
         self.parent_group = parent_group  # 父分组的路径
         self.cur_group = cur_group  # 当前组名
         self.dao = Dao(parent_group, cur_group)  # Dao对象用于数据存储和管理
+        self.init_metadata()
+
 
     def set_metadata(self, metadata):
         self.metadata = metadata
@@ -17,17 +21,31 @@ class DataHandler():
 
     def get_metadata(self):
         if not hasattr(self, 'metadata'):
-            return self.dao.get_metadata()
+            if self.cur_group in self.dao.f:
+                metadata = self.dao.get_metadata()
+            else:
+                self.build_dataset()
+                self.save()
+                metadata = self.metadata
         else:
-            return self.metadata
+            metadata = self.metadata
+        self.metadata = metadata
+        self.meta_reflection()
+        return metadata
 
     def get_dataset(self):
         if not hasattr(self, 'dataset'):
-            dataset = self.dao.get_dataset()
-            self.dataset = self.convert_from_storage_format(dataset)
-            return dataset
+            if len(self.dao.f[self.cur_group]) > 0:
+                dataset = self.dao.get_dataset()
+                self.dataset = self.convert_from_storage_format(dataset)
+                return self.dataset
+            else:
+                self.build_dataset()
+                self.save()
+                return self.dataset
         else:
             return self.dataset
+
 
     def get_build_necessity(self):
         """
@@ -39,8 +57,11 @@ class DataHandler():
         # 检查数据文件是否存在
         if not os.path.exists(self.dao.data_file):
             return True
+        elif self.dao.get_metadata()==None:
+            return True
         # 检查存储的元数据是否与当前对象的元数据匹配
         elif self.dao.get_metadata() != self.metadata:
+            del self.dao.f[self.dao.group_path]
             print("Metadata mismatch, rebuilding required.")
             return True  # 不匹配时，需要重新构建
         else:
@@ -57,8 +78,8 @@ class DataHandler():
         print(f"Saving dataset and metadata for {self.cur_group}...")
 
         # 使用Dao对象保存数据集和元数据
-        dataset = self.convert_to_storage_format(self.dataset)
-        self.dao.set_dataset(dataset)
+        self.convert_to_storage_format(self.dataset)
+        self.dao.set_dataset(self.dataset)
         self.dao.set_metadata(self.metadata)
         self.dao.save()  # 执行保存操作
         print("Data saved successfully.")
@@ -68,9 +89,9 @@ class DataHandler():
         加载数据集和元数据，并执行元反射操作
         """
         print(f"Loading dataset and metadata for {self.cur_group}...")
-        self.dataset = self.dao.get_dataset()  # 从Dao对象加载数据集
-        self.metadata = self.dao.get_metadata()  # 从Dao对象加载元数据
-        self.meta_reflection()  # 进行元反射
+        self.dataset = self.get_dataset()  # 从Dao对象加载数据集
+        self.metadata = self.get_metadata()  # 从Dao对象加载元数据
+
         print("Data loaded and attributes updated via meta reflection.")
 
     def meta_reflection(self):
@@ -97,10 +118,20 @@ class DataHandler():
         """将值转换回原始格式"""
         return torch.tensor(value, device=device)  # 将NumPy数组转换为CUDA tensor
 
-    @abstractmethod
     def convert_to_storage_format(self, dataset):
-        pass
+        for key, value in dataset.items():
+            if isinstance(value, torch.Tensor):
+                dataset[key] = value.detach().cpu().numpy()
+            elif isinstance(value, dict):
+                serialized_value = pickle.dumps(value)
+                dataset[key] = serialized_value
 
     @abstractmethod
     def convert_from_storage_format(self, dataset):
+        pass
+    @classmethod
+    def build_dataset(self):
+        pass
+    @abstractmethod
+    def init_metadata(self):
         pass
