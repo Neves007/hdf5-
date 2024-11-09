@@ -11,48 +11,11 @@ import networkx as nx
 class SF(Network):
     def __init__(self,net_config):
         super().__init__(net_config)
-        self.set_attr(self.net_config)
         pass
-
-    def set_inc_matrix_adj_info(self):
-        self.inc_matrix_adj0 = self.inc_matrix_adj_info["inc_matrix_adj0"]
-        self.inc_matrix_adj1 = self.inc_matrix_adj_info["inc_matrix_adj1"]
-        self.inc_matrix_adj2 = self.inc_matrix_adj_info["inc_matrix_adj2"]
-
-
 
     def compute_pcum_from_plink(self, pnode):
         pcum = torch.cat([torch.tensor([0], device=self.DEVICE), torch.cumsum(pnode[:, 1] / torch.sum(pnode[:, 1]), dim=0)])
         return pcum
-
-    def _init_network(self):
-        # Create initial adjacency matrix on cuda
-        A0 = torch.ones((self.N0, self.N0), device=self.DEVICE)
-        A0 = A0 - torch.diag(torch.diag(A0))
-        A = torch.zeros((self.NUM_NODES, self.NUM_NODES), device=self.DEVICE)
-        A[:self.N0, :self.N0] = A0
-
-        # pnode：Dij的稀疏表示
-        # Extract upper triangular part of Dij and find non-zero elements
-        D_list = torch.sum(A,dim=1)
-        non_zero_indices = torch.nonzero(D_list > 0)
-        pnode = torch.cat([non_zero_indices, D_list[non_zero_indices]], dim=1)
-
-        # 由plink的度分布决定的累积概率
-        pcum = self.compute_pcum_from_plink(pnode)
-
-
-        nodes = torch.arange(self.NUM_NODES)
-        edges = set()
-        # 根据平均度计算边和三角形的数量
-        attr = {
-            "A": A,
-            "pnode":pnode,
-            "pcum":pcum,
-            "nodes": nodes,
-            "edges": edges,
-        }
-        self.set_attr(attr)
 
     def _add_a_node(self, new_node_i):
         self.A[new_node_i, new_node_i] = 0
@@ -105,13 +68,10 @@ class SF(Network):
 
         NUM_EDGES = edges_tensor.shape[0]
         AVG_K = 2 * len(edges_tensor) / self.NUM_NODES
-
-        net_info = {"nodes": nodes_tensor,
-                    "edges": edges_tensor,
-                    "NUM_EDGES": NUM_EDGES,
-                    "AVG_K": AVG_K}
-        self.__setattr__("net_info",net_info)
-        self.set_attr(net_info)
+        self.nodes = nodes_tensor
+        self.edges = edges_tensor
+        self.NUM_EDGES = NUM_EDGES
+        self.AVG_K = AVG_K
 
     def _add_new_nodes(self):
         # 添加新节点
@@ -145,13 +105,8 @@ class SF(Network):
         # inc_matrix_1：节点和边的关联矩阵
         inc_matrix_adj1 = nodeToEdge_matrix(self.nodes, self.edges)
         inc_matrix_adj1 = inc_matrix_adj1.to_sparse()
-        inc_matrix_adj_info = {
-            "inc_matrix_adj0":inc_matrix_adj0,
-            "inc_matrix_adj1":inc_matrix_adj1
-        }
-        # 随机断边
-        self.set_attr(inc_matrix_adj_info)
-        self.__setattr__("inc_matrix_adj_info",inc_matrix_adj_info)
+        self.inc_matrix_adj0 = inc_matrix_adj0
+        self.inc_matrix_adj1 = inc_matrix_adj1
 
     def to_device(self, device):
         self.DEVICE = device
@@ -164,13 +119,25 @@ class SF(Network):
         self.inc_matrix_adj0 = self.inc_matrix_adj0.to(self.DEVICE)
         self.inc_matrix_adj1 = self.inc_matrix_adj1.to(self.DEVICE)
 
-    def _unpack_inc_matrix_adj_info(self):
+    def unpack_inc_matrix_adj_info(self):
+        if not hasattr(self, "inc_matrix_adj0"):
+            self.load() 
         return self.inc_matrix_adj0, self.inc_matrix_adj1
 
-    def build(self):
+    def build_dataset(self):
         # 生成无标度网络
         G = nx.barabasi_albert_graph(self.NUM_NODES, self.nlink)
         self.__setattr__("G", G)
         self._update_topology_info()
         self._update_adj()
-
+        dataset = {
+            "nodes": self.nodes,
+            "edges": self.edges,
+            "NUM_EDGES": self.NUM_EDGES,
+            "AVG_K": self.AVG_K,
+            "NUM_NEIGHBOR_NODES": self.inc_matrix_adj0.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_EDGES": self.inc_matrix_adj1.sum(dim=1).to_dense(),
+            "inc_matrix_adj0": self.inc_matrix_adj0,
+            "inc_matrix_adj1": self.inc_matrix_adj1,
+        }
+        self.set_dataset(dataset)

@@ -46,7 +46,9 @@ class ER(Network):
         self.inc_matrix_adj0 = self.inc_matrix_adj0.to(self.DEVICE)
         self.inc_matrix_adj1 = self.inc_matrix_adj1.to(self.DEVICE)
 
-    def _unpack_inc_matrix_adj_info(self):
+    def unpack_inc_matrix_adj_info(self):
+        if not hasattr(self, "inc_matrix_adj0"):
+            self.load() 
         return self.inc_matrix_adj0, self.inc_matrix_adj1
 
     def _update_topology_info(self):
@@ -64,6 +66,8 @@ class ER(Network):
             "nodes": self.nodes,
             "edges": self.edges,
             "NUM_NODES": self.NUM_NODES,
+            "NUM_NEIGHBOR_NODES": self.inc_matrix_adj0.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_EDGES": self.inc_matrix_adj1.sum(dim=1).to_dense(),
             "AVG_K": self.AVG_K,
             "inc_matrix_adj0": self.inc_matrix_adj0,
             "inc_matrix_adj1": self.inc_matrix_adj1,

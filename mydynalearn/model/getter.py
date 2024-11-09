@@ -1,16 +1,17 @@
 import loguru
-
-from mydynalearn.model.attention_model import GraphAttentionModel,SimplicialAttentionModel
+from mydynalearn.config import ConfigExp
+from mydynalearn.model.model_attention import GraphAttentionModel,SimplicialAttentionModel
 __Model__ = {
     "GAT": GraphAttentionModel,
     "SAT": SimplicialAttentionModel,
-    "DiffSAT": SimplicialAttentionModel,
-    "DualSAT": SimplicialAttentionModel,
 }
 
 
 def get(config):
-    NAME = config.model.NAME
+    if isinstance(config, ConfigExp):
+        NAME = config.model.NAME
+    elif isinstance(config, str):
+        NAME = config
     if NAME in __Model__:
         model = __Model__[NAME](config)
         return model

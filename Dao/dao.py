@@ -18,6 +18,13 @@ class Dao:
         self.cur_group = cur_group_name  # 当前组的名称
         self.group_path = self.get_group_path()  # 生成组的绝对路径
 
+    def get_group_obj(self):
+        if self.group_path in self.f:
+            group_obj = self.f[self.group_path]
+        else:
+            group_obj = None
+        return group_obj
+
     def set_metadata(self, metadata):
         """
         设置元数据。
@@ -48,7 +55,6 @@ class Dao:
                 # 从文件中加载元数据并赋值给 self.metadata
                 self.metadata = {name: Dao.f[self.group_path].attrs[name] for name in Dao.f[self.group_path].attrs}
             else:
-                print(f"No metadata found for '{self.group_path}' in the file.")
                 return None
         return self.metadata
 
@@ -60,35 +66,18 @@ class Dao:
         - dataset: 一个字典，包含数据集。
         """
         if not hasattr(self, 'dataset'):
-            if self.group_path in Dao.f:
+
+            if self.group_path in self.f:
+                self.dataset = {}
+                for name in self.f[self.group_path].keys():
+                    if isinstance(self.f[self.group_path][name], h5py.Dataset):
+                        self.dataset[name] = self.f[self.group_path][name][...]
+
                 # 从文件中加载数据集并赋值给 self.dataset
-                self.dataset = {name: Dao.f[self.group_path][name][...] for name in Dao.f[self.group_path].keys()}
+
             else:
-                print(f"No dataset found for '{self.group_path}' in the file.")
                 return None
         return self.dataset
-
-    def compare_data_structure(self, target_dataset):
-        """
-        比较 target_dataset 的键和文件中 group 的键是否相同
-        :param target_dataset: 用于比较的目标数据集
-        :return: 如果键相同则返回 True，否则返回 False
-        """
-        if self.group_path in Dao.f:
-            group = Dao.f[self.group_path]
-            group_keys = list(group.keys())  # 获取文件中 group 的键
-            target_keys = list(target_dataset.keys())  # 获取 target_dataset 的键
-
-            # 比较两个键列表是否相同
-            if group_keys == target_keys:
-                print("Group keys match with target dataset keys.")
-                return True
-            else:
-                print("Group keys do not match with target dataset keys.")
-                return False
-        else:
-            print(f"No dataset found for '{self.group_path}' in the file.")
-            return False
 
     def get_group_path(self):
         """
@@ -110,20 +99,26 @@ class Dao:
 
         # 检查目标路径是否已存在
         if self.group_path not in Dao.f:
-            # 创建一个新的组并存储 dataset 和 metadata
-            data_group = Dao.f.create_group(self.group_path)
+            try:
+                # 创建一个新的组并存储 dataset 和 metadata
+                data_group = Dao.f.create_group(self.group_path)
 
-            # 将 dataset 存储到组中
-            for name, data in self.dataset.items():
-                data_group.create_dataset(name, data=data)
+                # 将 dataset 存储到组中
+                for name, data in self.dataset.items():
+                    data_group.create_dataset(name, data=data)
 
-                # 将 metadata 存储为组的属性
-            for name, data in self.metadata.items():
-                data_group.attrs[name] = data
-
-            print(f"Dataset '{self.group_path}' created and stored.")
+                    # 将 metadata 存储为组的属性
+                for name, data in self.metadata.items():
+                    data_group.attrs[name] = data
+            except Exception as e:
+                # 发生错误时删除已创建的分组
+                if self.group_path in Dao.f:
+                    del Dao.f[self.group_path]
+                print(f"An error occurred: {e}. Group '{self.group_path}' has been removed.")
+                raise e  # 重新抛出异常
         else:
-            print(f"Dataset '{self.group_path}' already exists, skipping creation.")
+            raise FileExistsError(f"Dataset '{self.group_path}' already exists.")
+
 
     def __enter__(self):
         if Dao.f is None:

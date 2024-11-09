@@ -97,13 +97,13 @@ class DynamicDataset(Dataset,DataHandler):
             self.dynamics.set_features(**onestep_spread_result)
             self._save_onesample_dataset(t, **onestep_spread_result)
 
-    def save(self, dataset):
+    def _save(self, dataset):
         file_name = self.dataset_file_path
         with open(file_name, "wb") as file:
             pickle.dump(dataset, file)
         file.close()
 
-    def load(self):
+    def _load(self):
         file_name = self.dataset_file_path
         with open(file_name, "rb") as file:
             data = pickle.load(file)
@@ -139,6 +139,6 @@ class DynamicDataset(Dataset,DataHandler):
         self.set_dataset(dataset)
 
     def run(self):
-        if self.dataset.get_build_necessity():
+        if self.dataset._get_build_necessity():
             self.build_dataset()
-            self.save()
+            self._save()

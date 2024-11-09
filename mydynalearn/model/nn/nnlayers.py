@@ -28,7 +28,8 @@ class nnLayer():
 
     def get_gnn_layer(self):
         GNNLayers = gnn_getter(self.config)
-        gnn_layers = GNNLayers(self._gnn_in_features,
+        gnn_layers = GNNLayers(self.config,
+                               self._gnn_in_features,
                                self._gnn_out_features,
                                self._gnn_heads,
                                self._concat).to(self.DEVICE)

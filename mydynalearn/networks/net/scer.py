@@ -75,19 +75,10 @@ class SCER(Network):
         NUM_TRIANGLES = self.triangles.shape[0]
         AVG_K = 2 * len(self.edges) / self.NUM_NODES
         AVG_K_DELTA = 3 * len(self.triangles) / self.NUM_NODES
-
-        net_info = {
-            "nodes": self.nodes,
-            "edges": self.edges,
-            "triangles": self.triangles,
-            "NUM_EDGES": NUM_EDGES,
-            "NUM_TRIANGLES": NUM_TRIANGLES,
-            "AVG_K": AVG_K,
-            "AVG_K_DELTA": AVG_K_DELTA,
-        }
-        self.__setattr__("net_info",net_info)
-        self.set_attr(net_info)
-
+        self.NUM_EDGES = NUM_EDGES
+        self.NUM_TRIANGLES = NUM_TRIANGLES
+        self.AVG_K = AVG_K
+        self.AVG_K_DELTA = AVG_K_DELTA
 
 
 
@@ -107,13 +98,9 @@ class SCER(Network):
         inc_matrix_adj2 = nodeToTriangle_matrix(self.nodes, self.triangles)
         inc_matrix_adj2 = inc_matrix_adj2.to_sparse()
         # 随机断边
-        inc_matrix_adj_info = {
-            "inc_matrix_adj0":inc_matrix_adj0,
-            "inc_matrix_adj1":inc_matrix_adj1,
-            "inc_matrix_adj2":inc_matrix_adj2
-        }
-        self.set_attr(inc_matrix_adj_info)
-        self.__setattr__("inc_matrix_adj_info",inc_matrix_adj_info)
+        self.inc_matrix_adj0 = inc_matrix_adj0
+        self.inc_matrix_adj1 = inc_matrix_adj1
+        self.inc_matrix_adj2 = inc_matrix_adj2
 
 
     def to_device(self,device):
@@ -131,7 +118,9 @@ class SCER(Network):
         self.inc_matrix_adj1 = self.inc_matrix_adj1.to(device)
         self.inc_matrix_adj2 = self.inc_matrix_adj2.to(device)
 
-    def _unpack_inc_matrix_adj_info(self):
+    def unpack_inc_matrix_adj_info(self):
+        if not hasattr(self, "inc_matrix_adj0"):
+            self.load() 
         return self.inc_matrix_adj0, self.inc_matrix_adj1, self.inc_matrix_adj2
 
     def build(self):
@@ -146,3 +135,33 @@ class SCER(Network):
         self._merge_edges(edges,edges_in_triangles) # 将三角中包含的边的边加入边
         self._update_topology_info()
         self._update_adj()
+
+    def build_dataset(self):
+        nodes = torch.arange(self.NUM_NODES, device=self.DEVICE)
+        self.__setattr__("nodes", nodes)
+
+        # 所需参数
+        self.get_createSimplex_num()
+        # 生成网络
+        edges = self._create_edges()  # 生成边
+        triangles, edges_in_triangles = self._create_triangles()  # 生成三角形
+        self._merge_edges(edges, edges_in_triangles)  # 将三角中包含的边的边加入边
+        self._update_topology_info()
+        self._update_adj()
+        dataset = {
+            "nodes": self.nodes,
+            "edges": self.edges,
+            "triangles": self.triangles,
+            "NUM_NODES": self.NUM_NODES,
+            "NUM_EDGES": self.NUM_EDGES,
+            "NUM_TRIANGLES": self.NUM_TRIANGLES,
+            "NUM_NEIGHBOR_NODES": self.inc_matrix_adj0.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_EDGES": self.inc_matrix_adj1.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_TRIANGLES": self.inc_matrix_adj2.sum(dim=1).to_dense(),
+            "AVG_K": self.AVG_K,
+            "AVG_K_DELTA": self.AVG_K_DELTA,
+            "inc_matrix_adj0": self.inc_matrix_adj0,
+            "inc_matrix_adj1": self.inc_matrix_adj1,
+            "inc_matrix_adj2": self.inc_matrix_adj2,
+        }
+        self.set_dataset(dataset)

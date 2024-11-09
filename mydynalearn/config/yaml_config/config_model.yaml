@@ -14,8 +14,8 @@ GAT:
   bias: True
   self_attention: True
 
-SCAT:
-  NAME: "SCAT" # This should be set to the actual model name used.    # This should be set to the actual number of states used.
+SAT:
+  NAME: "SAT" # This should be set to the actual model name used.    # This should be set to the actual number of states used.
   EPOCHS: 30
   batch_size: 1
   heads: 2

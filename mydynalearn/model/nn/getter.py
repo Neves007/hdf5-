@@ -4,8 +4,6 @@ from mydynalearn.model.nn import *
 __gnn__ = {
     "GAT": GraphAttentionLayer,
     "SAT": SimplexAttentionLayer,
-    "DiffSAT": SimplexDiffAttentionLayer,
-    "DualSAT": SimplexDualAttentionLayer,
 }
 
 

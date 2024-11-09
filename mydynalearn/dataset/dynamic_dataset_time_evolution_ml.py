@@ -68,7 +68,7 @@ class DynamicDatasetTimeEvolutionML(TorchLazyLoader, Replication):
             onestep_spread_result = self.dynamics._run_onestep()
             self.dynamics.spread_result_to_float(onestep_spread_result)
             # 模型预测结果：
-            _, x0, y_pred, y_true, y_ob, w = self.ml_model.batch_task._do_batch_(self.ml_model.attention_model,self.network,self.dynamics, tuple(onestep_spread_result.values()))
+            _, x0, y_pred, y_true, y_ob, w = self.ml_model.batch_task._do_batch_(self.ml_model.model, self.network, self.dynamics, tuple(onestep_spread_result.values()))
             new_x0 = self.dynamics.get_transition_state(y_pred.clone().detach())
             ml_onestep_spread_result = {
                 "old_x0": x0.clone().detach(),

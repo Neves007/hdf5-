@@ -127,6 +127,7 @@ class CompartmentModel():
 
     def set_network(self,network):
         self.network = network
+        self.network.load()
         self.NUM_NODES = network.NUM_NODES
 
     def set_x0(self,x0):

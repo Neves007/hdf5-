@@ -1,15 +1,12 @@
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
-from torch import Tensor
-from mydynalearn.model.util.multi_head_linear import MultiHeadLinear
-from torch_geometric.nn.conv import MessagePassing
-from torch_geometric.nn.inits import glorot, zeros
-
+from mydynalearn.networks.getter import get as get_network
 class GATLayer_regular(nn.Module):
 
-    def __init__(self, input_size, output_size, bias=True):
+    def __init__(self,config, input_size, output_size, bias=True):
         super().__init__()
+        self.config = config
         # input
         self.input_linear_layer1 = nn.Linear(input_size, output_size, bias=bias)
         self.input_linear_layer2 = nn.Linear(input_size, output_size, bias=bias)
@@ -20,7 +17,10 @@ class GATLayer_regular(nn.Module):
         self.leakyrelu = nn.LeakyReLU(0.2)
         self.relu = nn.GELU()
 
-    def forward(self, x0, x1, adj):
+
+
+
+    def forward(self, network, x0):
         """
         features : n * m dense matrix of feature vectors
         adj : n * n  sparse signed orientation matrix
@@ -28,6 +28,7 @@ class GATLayer_regular(nn.Module):
         """
         x0_i = self.leakyrelu(self.input_linear_layer1(x0))
         x0_j = self.leakyrelu(self.input_linear_layer2(x0))
+        adj = network.inc_matrix_adj0
 
         indices = adj.coalesce().indices()
 
@@ -47,14 +48,14 @@ class GATLayer_regular(nn.Module):
         return output
 
 class GraphAttentionLayer(nn.Module):
-    def __init__(self, input_size, output_size, heads, concat, bias=True):
+    def __init__(self,config, input_size, output_size, heads, concat, bias=True):
         super().__init__()
-        self.layer0_1 = torch.nn.ModuleList([GATLayer_regular(input_size, output_size, bias) for _ in range(heads)])
+        self.config = config
+        self.layer0_1 = torch.nn.ModuleList([GATLayer_regular(config, input_size, output_size, bias) for _ in range(heads)])
 
 
 
-    def forward(self, x0,network):
-        inc_matrix_adj0 = network.inc_matrix_adj0
-        x0_1 = torch.stack([gat(x0, x0, inc_matrix_adj0) for gat in self.layer0_1])
+    def forward(self,**kwargs):
+        x0_1 = torch.stack([gat(**kwargs) for gat in self.layer0_1])
         x0_1 = torch.mean(x0_1,dim=0)
         return x0_1

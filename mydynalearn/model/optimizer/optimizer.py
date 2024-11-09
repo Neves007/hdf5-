@@ -22,10 +22,10 @@ __optimizers__ = {
 
 
 def get(config):
-    NAME = config.NAME
+    NAME = config.optimizer.NAME
 
     if NAME in __optimizers__:
-        return __optimizers__[NAME](config)
+        return __optimizers__[NAME](config.optimizer)
     else:
         raise ValueError(
             f"{NAME} is invalid, possible entries are {list(__optimizers__.keys())}"

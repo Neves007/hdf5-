@@ -12,9 +12,9 @@ CompUAU:
   NAME: "CompUAU"
   STATES_MAP:
     UU: 0
-    A1U: 1
-    UA2: 2
-    A1A2: 3
+    A_1U: 1
+    UA_2: 2
+    A_1A_2: 3
   MAX_DIMENSION: 1
   SEED_FREC_A1: 0.1
   SEED_FREC_A2: 0.1
@@ -29,9 +29,9 @@ CoopUAU:
   NAME: "CoopUAU"
   STATES_MAP:
     UU: 0
-    A1U: 1
-    UA2: 2
-    A1A2: 3
+    A_1U: 1
+    UA_2: 2
+    A_1A_2: 3
   MAX_DIMENSION: 1
   SEED_FREC_A1: 0.1
   SEED_FREC_A2: 0.1
@@ -46,9 +46,9 @@ AsymUAU:
   NAME: "AsymUAU"
   STATES_MAP:
     UU: 0
-    A1U: 1
-    UA2: 2
-    A1A2: 3
+    A_1U: 1
+    UA_2: 2
+    A_1A_2: 3
   MAX_DIMENSION: 1
   SEED_FREC_A1: 0.1
   SEED_FREC_A2: 0.1
@@ -74,9 +74,9 @@ SCCompUAU:
   NAME: "SCCompUAU"
   STATES_MAP:
     UU: 0
-    A1U: 1
-    UA2: 2
-    A1A2: 3
+    A_1U: 1
+    UA_2: 2
+    A_1A_2: 3
   MAX_DIMENSION: 2
   SEED_FREC_A1: 0.1
   SEED_FREC_A2: 0.1
@@ -93,9 +93,9 @@ SCCoopUAU:
   NAME: "SCCoopUAU"
   STATES_MAP:
     UU: 0
-    A1U: 1
-    UA2: 2
-    A1A2: 3
+    A_1U: 1
+    UA_2: 2
+    A_1A_2: 3
   MAX_DIMENSION: 2
   SEED_FREC_A1: 0.5
   SEED_FREC_A2: 0.5
@@ -112,9 +112,9 @@ SCAsymUAU:
   NAME: "SCAsymUAU"
   STATES_MAP:
     UU: 0
-    A1U: 1
-    UA2: 2
-    A1A2: 3
+    A_1U: 1
+    UA_2: 2
+    A_1A_2: 3
   MAX_DIMENSION: 2
   SEED_FREC_A1: 0.1
   SEED_FREC_A2: 0.1

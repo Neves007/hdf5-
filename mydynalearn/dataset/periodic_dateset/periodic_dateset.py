@@ -23,12 +23,19 @@ class PeriodicDateset(DataHandler):
     def __init__(self, config) -> None:
         self.config = config
         self.dataset_config = config.dataset
-        self.logger = Log("DynamicDataset")
+        self.logger = Log("PeriodicDateset")
         self.init_metadata()
-        parent_group = "dataset/training_evolution"
+        parent_group = "dataset/periodic_evolution"
         cur_group = f"{self.metadata['NETWORK_NAME']}_{self.metadata['DYNAMIC_NAME']}"
         DataHandler.__init__(self, parent_group, cur_group)
 
+
+    def get_network(self):
+        network = get_network(self.config)
+        return network
+    def get_dynamics(self):
+        dynamics = get_dynamics(self.config)
+        return dynamics
 
     def init_metadata(self):
         metadata = {}
@@ -37,14 +44,15 @@ class PeriodicDateset(DataHandler):
         metadata['NETWORK_NAME'] = self.config.network['NAME']
         metadata['NUM_SAMPLES'] = self.dataset_config['NUM_SAMPLES']
         metadata['IS_WEIGHT'] = self.dataset_config['IS_WEIGHT']
+        metadata['STATES_MAP_key'] = list(self.config.dynamics['STATES_MAP'].keys())
+        metadata['STATES_MAP_value'] = list(self.config.dynamics['STATES_MAP'].values())
         self.set_metadata(metadata)
 
-    def init_attributes(self):
+    def begin(self):
         self.NUM_SAMPLES = self.dataset_config.NUM_SAMPLES
         self.T_INIT = self.dataset_config.T_INIT
         self.DEVICE = self.config.DEVICE
         self.network = get_network(self.config)
-        self.network.run()
         self.dynamics = get_dynamics(self.config)
 
     def _init_dataset(self):
@@ -63,13 +71,12 @@ class PeriodicDateset(DataHandler):
         self.y_true_T[t] = true_tp
         self.weight_T[t] = weight
 
-    def _buid_dataset(self):
+    def build_dataset(self):
         '''生成动力学数据
             简介
                 - 在T_INIT时间后重置初始节点，从而增加传播动力学异质性。
         '''
         # 获取动力学数据
-        self.network = self.network.get_dataset()  # 构造网络
         self.dynamics.set_network(self.network)  # 设置动力学网络
         self._init_dataset()
         # 生成数据集
@@ -81,50 +88,11 @@ class PeriodicDateset(DataHandler):
             onestep_spread_result = self.dynamics._run_onestep()
             self.dynamics.set_features(**onestep_spread_result)
             self._save_onesample_dataset(t, **onestep_spread_result)
-
-    def save(self, dataset):
-        file_name = self.dataset_file_path
-        with open(file_name, "wb") as file:
-            pickle.dump(dataset, file)
-        file.close()
-
-    def load(self):
-        file_name = self.dataset_file_path
-        with open(file_name, "rb") as file:
-            data = pickle.load(file)
-        file.close()
-        return data
-
-    def _buid_dynamic_process_dataset(self):
-        '''动力学实验
-            简介
-                - 运行一段连续时间演化的动力学过程
-                - 用于验证动力学是否正确
-        '''
-        self._init_dataset()  # 设置
-        self.dynamics.init_stateof_network()
-        self.logger.log("create dynamics")
-        for t in range(self.NUM_SAMPLES):
-            onestep_spread_result = self.dynamics._run_onestep()
-            self.dynamics.set_features(**onestep_spread_result)
-            self._save_onesample_dataset(t, **onestep_spread_result)
-
-    def build_dataset(self):
-        self._buid_dataset()
-        train_set, val_set, test_set = self._partition_dataSet()
-        network = self.network
-        dynamics = self.dynamics
         dataset = {
-            "network": network,
-            "dynamics": dynamics,
-            "train_set": train_set,
-            "val_set": val_set,
-            "test_set": test_set,
+            "x0_T": self.x0_T,
+            "y_ob_T": self.y_ob_T,
+            "y_true_T": self.y_true_T,
+            "weight_T": self.weight_T,
         }
         self.set_dataset(dataset)
 
-    def run(self):
-        if self.get_build_necessity():
-            self.init_attributes()
-            self.build_dataset()
-            self.save()

@@ -1,1 +1,0 @@
-from .fig_maxR import *

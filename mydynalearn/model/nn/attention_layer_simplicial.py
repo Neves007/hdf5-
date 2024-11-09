@@ -9,11 +9,11 @@ from mydynalearn.model.util.multi_head_linear import MultiHeadLinear
 from torch_geometric.nn.conv import MessagePassing
 from torch_geometric.nn.inits import glorot, zeros
 
-
 class SATLayer_regular(nn.Module):
 
-    def __init__(self, input_size, output_size, bias=True):
+    def __init__(self,config, input_size, output_size, bias=True):
         super().__init__()
+        self.config = config
         # input
         self.input_linear_layer1 = nn.Linear(input_size, output_size, bias=bias)
         self.input_linear_layer2 = nn.Linear(input_size, output_size, bias=bias)
@@ -35,9 +35,6 @@ class SATLayer_regular(nn.Module):
         # activation function
         self.leakyrelu = nn.LeakyReLU(0.2)
         self.relu = nn.GELU()
-        
-
-
 
     def attention_agg(self, xj, a_i,a_j,inc_matrix_adj):
         indices = inc_matrix_adj.coalesce().indices()
@@ -58,7 +55,7 @@ class SATLayer_regular(nn.Module):
         output : n * k dense matrix of new feature vectors
         """
         if x2==None:
-            incMatrix_adj0, incMatrix_adj1 = network._unpack_inc_matrix_adj_info()
+            incMatrix_adj0 = network.inc_matrix_adj0
             xi_0 = self.leakyrelu(self.input_linear_layer1(x0))
             xj_0 = self.leakyrelu(self.input_linear_layer2(x0))
 
@@ -71,7 +68,9 @@ class SATLayer_regular(nn.Module):
             # residual + layer norm
             output = self.output_linear_layer1(agg0) + xi_0
         else:
-            incMatrix_adj0, incMatrix_adj1, incMatrix_adj2 = network._unpack_inc_matrix_adj_info()
+            incMatrix_adj0 = network.inc_matrix_adj0
+            incMatrix_adj1 = network.inc_matrix_adj1
+            incMatrix_adj2 = network.inc_matrix_adj2
             xi_0 = self.leakyrelu(self.input_linear_layer1(x0))
             xj_0 = self.leakyrelu(self.input_linear_layer2(x0))
             xj_1 = self.leakyrelu(self.input_linear_layer3(x1))
@@ -92,9 +91,10 @@ class SATLayer_regular(nn.Module):
         return output
 
 class SimplexAttentionLayer(nn.Module):
-    def __init__(self, input_size, output_size, heads, concat, bias=True):
+    def __init__(self, config, input_size, output_size, heads, concat, bias=True):
         super().__init__()
-        self.layer0_1 = torch.nn.ModuleList([SATLayer_regular(input_size, output_size, bias) for _ in range(heads)])
+        self.config = config
+        self.layer0_1 = torch.nn.ModuleList([SATLayer_regular(config, input_size, output_size, bias) for _ in range(heads)])
 
 
     def forward(self, **kwargs):

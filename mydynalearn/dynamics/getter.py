@@ -1,5 +1,5 @@
 from mydynalearn.dynamics.compartment_model import *
-
+from mydynalearn.config import ConfigExp
 __DYNAMICS__ = {
     "UAU": UAU,
     "CompUAU": CoevUAU,
@@ -13,7 +13,11 @@ __DYNAMICS__ = {
 
 
 def get(config):
-    NAME = config.dynamics.NAME
+
+    if isinstance(config, ConfigExp):
+        NAME = config.dynamics.NAME
+    elif isinstance(config, str):
+        NAME = config
     if NAME in __DYNAMICS__:
         return __DYNAMICS__[NAME](config)
     else:

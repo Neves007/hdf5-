@@ -1,7 +1,4 @@
-default:
-    NAME: "AnalyzeModel"
-    root_dir_path: "./output/analyze/"
-    analyze_result_dir_name: "analyze_result"
-    dataframe_dir_name: "dataframe"
-    all_epoch_dataframe_file_name: "all_epoch_dataframe.csv"
-    best_epoch_value_dataframe_file_name: "best_epoch_dataframe.csv"
+
+epoch_analyze_dir: "analyze/epoch_analyze"
+exp_analyze_dir: "analyze/exp"
+overall_analyze_dir: "analyze/overall"

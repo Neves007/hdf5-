@@ -8,7 +8,7 @@ from mydynalearn.logger import Log
 from torch.utils.data import DataLoader
 import torch
 class Model():
-    def __init__(self, config):
+    def __init__(self, config, split_dataset):
         """Dense version of GAT."""
         # config
         self.config = config
@@ -16,23 +16,21 @@ class Model():
         self.NAME = config.model.NAME
         self.EPOCHS = config.model.EPOCHS
 
-    # 放进数据集类里面
-
     # 定义模型
-    def run(self,dataset):
+    def run(self):
         self.logger.increase_indent()
         self.logger.log("Beginning model training...")
-        self.epoch_tasks.run_all(**dataset)
+        for epoch_tasks in self.epoch_task_generator:
+            epoch_tasks.run()
+            epoch_tasks.low_the_lr()
         self.logger.decrease_indent()
 
-    def run_all_epochs(self,dataset):
-        self.logger.increase_indent()
-        self.logger.log("Beginning model training...")
+    @property
+    def epoch_task_generator(self):
         for epoch_index in range(self.EPOCHS):
-            epoch_tasks = EpochTasks(self.config, epoch_index)
-            if epoch_tasks.get_build_necessity():
-                epoch_tasks.build_dataset()
-                epoch_tasks.save()
-                epoch_tasks.low_the_lr(epoch_index)
-        self.logger.decrease_indent()
+            epoch_task = self.get_epoch_task(epoch_index)
+            yield epoch_task
 
+    def get_epoch_task(self, epoch_index):
+        epoch_tasks = EpochTasks(self.config, epoch_index)
+        return epoch_tasks

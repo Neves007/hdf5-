@@ -1,4 +1,5 @@
 import loguru
+from mydynalearn.config import ConfigExp
 
 from mydynalearn.networks import *
 __networks__ = {
@@ -15,7 +16,10 @@ __networks__ = {
 
 
 def get(config):
-    NAME = config.network.NAME
+    if isinstance(config, ConfigExp):
+        NAME = config.network.NAME
+    elif isinstance(config, str):
+        NAME = config
     if NAME in __networks__:
         net = __networks__[NAME](config)
         return net

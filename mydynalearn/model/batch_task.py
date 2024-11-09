@@ -22,21 +22,21 @@ class BatchTask():
     def weighted_cross_entropy(self,y_true, y_pred, weights=None):
         y_pred = torch.clamp(y_pred, 1e-15, 1 - 1e-15)
         loss = weights * (-y_true * torch.log(y_pred)).sum(-1)
-        return loss.sum()
+        return loss.mean()
 
-    def _do_batch_(self, attention_model, network, dynamics, dataset_per_time):
+    def _do_batch_(self, model, dataset_per_time):
         '''batch
         :param dataset_per_time:
             - x0, y_ob, y_true, weight
             - 来自DynamicDataset.__getitem__
         :return:
         '''
-        x0, y_pred, y_true, y_ob, w = self.prepare_output(attention_model, network, dynamics, dataset_per_time)
+        x0, y_pred, y_true, y_ob, w = self.prepare_output(model, dataset_per_time)
         loss = self.weighted_cross_entropy(y_ob, y_pred, w)
         return loss, x0, y_pred, y_true, y_ob, w
 
-    def prepare_output(self, attention_model, network, dynamics, dataset_per_time):
-        x0, y_pred, y_true, y_ob, weight = attention_model(network, dynamics, *dataset_per_time)
+    def prepare_output(self, model, dataset_per_time):
+        x0, y_pred, y_true, y_ob, weight = model(*dataset_per_time)
         if self.IS_WEIGHT == False:
             weight = torch.ones(x0.shape[0]).to(self.DEVICE)
         return x0, y_pred, y_true, y_ob, weight

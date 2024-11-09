@@ -10,7 +10,6 @@ from mydynalearn.networks.network import Network
 class SCSF(Network):
     def __init__(self,net_config):
         super().__init__(net_config)
-        self.set_attr(self.net_config)
         pass
 
     def set_inc_matrix_adj_info(self):
@@ -189,12 +188,30 @@ class SCSF(Network):
         self.inc_matrix_adj1 = self.inc_matrix_adj1.to(device)
         self.inc_matrix_adj2 = self.inc_matrix_adj2.to(device)
 
-    def _unpack_inc_matrix_adj_info(self):
+    def unpack_inc_matrix_adj_info(self):
+        if not hasattr(self, "inc_matrix_adj0"):
+            self.load() 
         return self.inc_matrix_adj0, self.inc_matrix_adj1, self.inc_matrix_adj2
 
-    def build(self):
+    def build_dataset(self):
         self._init_network()
         self._add_new_nodes()
         self._update_topology_info()
         self._update_adj()
-
+        dataset = {
+            "nodes": self.nodes,
+            "edges": self.edges,
+            "triangles": self.triangles,
+            "NUM_NODES": self.NUM_NODES,
+            "NUM_EDGES": self.NUM_EDGES,
+            "NUM_TRIANGLES": self.NUM_TRIANGLES,
+            "NUM_NEIGHBOR_NODES": self.inc_matrix_adj0.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_EDGES": self.inc_matrix_adj1.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_TRIANGLES": self.inc_matrix_adj2.sum(dim=1).to_dense(),
+            "AVG_K": self.AVG_K,
+            "AVG_K_DELTA": self.AVG_K_DELTA,
+            "inc_matrix_adj0": self.inc_matrix_adj0,
+            "inc_matrix_adj1": self.inc_matrix_adj1,
+            "inc_matrix_adj2": self.inc_matrix_adj2,
+        }
+        self.set_dataset(dataset)

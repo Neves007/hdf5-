@@ -51,7 +51,9 @@ class Realnet(Network):
         self.inc_matrix_adj0 = self.inc_matrix_adj0.to(device)
         self.inc_matrix_adj1 = self.inc_matrix_adj1.to(device)
         self.inc_matrix_adj2 = self.inc_matrix_adj2.to(device)
-    def _unpack_inc_matrix_adj_info(self):
+    def unpack_inc_matrix_adj_info(self):
+        if not hasattr(self, "inc_matrix_adj0"):
+            self.load() 
         return self.inc_matrix_adj0, self.inc_matrix_adj1, self.inc_matrix_adj2
 
     def create_datawork(self):
@@ -78,3 +80,25 @@ class Realnet(Network):
     def build(self):
         self.create_datawork()
         self._update_adj()
+
+
+    def build_dataset(self):
+        self.create_datawork()
+        self._update_adj()
+        dataset = {
+            "nodes": self.nodes,
+            "edges": self.edges,
+            "triangles": self.triangles,
+            "NUM_NODES": self.NUM_NODES,
+            "NUM_EDGES": self.NUM_EDGES,
+            "NUM_TRIANGLES": self.NUM_TRIANGLES,
+            "NUM_NEIGHBOR_NODES": self.inc_matrix_adj0.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_EDGES": self.inc_matrix_adj1.sum(dim=1).to_dense(),
+            "NUM_NEIGHBOR_TRIANGLES": self.inc_matrix_adj2.sum(dim=1).to_dense(),
+            "AVG_K": self.AVG_K,
+            "AVG_K_DELTA": self.AVG_K_DELTA,
+            "inc_matrix_adj0": self.inc_matrix_adj0,
+            "inc_matrix_adj1": self.inc_matrix_adj1,
+            "inc_matrix_adj2": self.inc_matrix_adj2,
+        }
+        self.set_dataset(dataset)
