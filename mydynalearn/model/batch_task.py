@@ -40,4 +40,3 @@ class BatchTask():
         if self.IS_WEIGHT == False:
             weight = torch.ones(x0.shape[0]).to(self.DEVICE)
         return x0, y_pred, y_true, y_ob, weight
-

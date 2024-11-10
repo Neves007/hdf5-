@@ -4,9 +4,14 @@ class EpochAnalyzeManager():
     def __init__(self,config_analyze,exp_generator):
         self.config_analyze = config_analyze
         self.exp_generator = exp_generator
-        self.epoch_analyzer_generator = self.get_epoch_analyzer_generator()
 
-    def get_epoch_analyzer_generator(self):
+    @property
+    def analyze_result_generator(self):
+        for epoch_analyzer in self.epoch_analyzer_generator:
+            yield epoch_analyzer.get_analyze_result()
+
+    @property
+    def epoch_analyzer_generator(self):
         '''
         把每个exp的每个epoch_task分配给EpochAnalyzer
         :return:
@@ -21,5 +26,5 @@ class EpochAnalyzeManager():
         EpochAnalyzer 对每个epoch_task结果进行分析
         :return:
         '''
-        for epoch_analyzer in list(self.epoch_analyzer_generator):
+        for epoch_analyzer in self.epoch_analyzer_generator:
             epoch_analyzer.run()

@@ -152,13 +152,14 @@ class EpochTasks(DataHandler):
         y_pred_flat = total_dataset['y_pred'].flatten()
         # 计算相关系数
         R = np.corrcoef(np.stack([y_true_flat, y_pred_flat]))[0, 1]
-
+        node_loss = (-total_dataset['y_true'] * np.log(total_dataset['y_pred'])).sum(1)
         # 计算损失
-        loss = (-total_dataset['y_true'] * np.log(total_dataset['y_pred'])).sum(axis=-1).mean()
+        mean_loss = (-total_dataset['y_true'] * np.log(total_dataset['y_pred'])).sum(axis=-1).mean()
         dataset = {
             "epoch_index": self.epoch_index,
-            "loss": loss,
+            "mean_loss": mean_loss,
             "R": R,
+            "node_loss":node_loss
         }
         dataset.update(total_dataset)
         self.logger.decrease_indent()

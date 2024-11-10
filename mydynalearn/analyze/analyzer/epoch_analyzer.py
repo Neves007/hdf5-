@@ -7,4 +7,7 @@ class EpochAnalyzer():
 
     def run(self):
         self.epoch_result_handler_general_performance.run()
-        pass
+
+
+    def get_analyze_result(self):
+         self.epoch_result_handler_general_performance.get_dataset()

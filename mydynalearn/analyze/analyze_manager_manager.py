@@ -25,18 +25,24 @@ class AnalyzeManagerManager():
         '''
         self.epoch_analyze_manager.run()
         pass
+
     def analyze_every_exp(self):
         '''
         分析每个实验的所有epoch
         :return:
         '''
         pass
+
     def analyze_overall(self):
         '''
         分析所有实验
         :return:
         '''
         pass
+
+    def get_result_every_epoch(self):
+        return self.epoch_analyze_manager.analyze_result_generator
+
 
     def run(self):
         """
