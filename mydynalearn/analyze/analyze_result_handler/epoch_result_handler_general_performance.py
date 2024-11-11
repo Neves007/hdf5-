@@ -9,7 +9,7 @@ class EpochResultHandlerGeneralPerformance(AnalyzeResultHandler):
         self.epoch_task = epoch_task
         self.init_metadata()
         parent_group = self.get_parent_group()
-        cur_group = f"{self.metadata['NETWORK_NAME']}_{self.metadata['DYNAMICS_NAME']}_{self.metadata['MODEL_NAME']}/epoch_{self.metadata['epoch_index']}"
+        cur_group = self.epoch_task.cur_group
         super().__init__(parent_group, cur_group)
 
     def get_parent_group(self):
@@ -18,11 +18,7 @@ class EpochResultHandlerGeneralPerformance(AnalyzeResultHandler):
         return parent_group
 
     def init_metadata(self):
-        metadata = {"NETWORK_NAME": self.epoch_task.metadata['NETWORK_NAME'],
-                    "DYNAMICS_NAME": self.epoch_task.metadata['DYNAMICS_NAME'],
-                    "STATES": self.epoch_task.metadata['STATES'],
-                    "MODEL_NAME": self.epoch_task.metadata['MODEL_NAME'],
-                    "epoch_index": self.epoch_task.metadata['epoch_index']}
+        metadata = self.epoch_task.metadata
         self.set_metadata(metadata)
 
     def init_result(self):

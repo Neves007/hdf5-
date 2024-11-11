@@ -26,6 +26,8 @@
                 - 【训练模型测试集效果图片】：output\fig\model_performance
                 - 【真实模型测试集效果图片】：output\fig\realnet_performance
 '''
+import numpy as np
+
 from mydynalearn.experiments import *
 from mydynalearn.analyze import *
 
@@ -41,26 +43,28 @@ from mydynalearn.analyze import *
 '''
 
 params_exp_dict = {
-    # "graph_network": ["ER", "SF"],
-    # "graph_dynamics": ["UAU", "CompUAU", "CoopUAU", "AsymUAU"],
-    #
-    # "simplicial_network": ["SCER", "SCSF", "CONFERENCE", "HIGHSCHOOL", "HOSPITAL", "WORKPLACE"],
-    # "simplicial_dynamics": ["SCUAU", "SCCompUAU", "SCCoopUAU", "SCAsymUAU"],
-
-    "graph_network": ["ER"],
-    "graph_dynamics": ["UAU"],
-
-    "model": ["GAT"],  # 至少选一个
-    "IS_WEIGHT": [False]
-}
-fix_config = {
-    "NUM_SAMPLES": 100,
-    "TESTSET_TIMESTEP": 10,
-    "EPOCHS": 3,
-    "DEVICE": 'cuda',
+    # 实验参数
+    "graph_network": ["ER", "SF"],
+    "graph_dynamics": ["UAU", "CompUAU", "CoopUAU", "AsymUAU"],
+    "simplicial_network": ["SCER", "SCSF", "CONFERENCE", "HIGHSCHOOL", "HOSPITAL", "WORKPLACE"],
+    "simplicial_dynamics": ["SCUAU", "SCCompUAU", "SCCoopUAU", "SCAsymUAU"],
+    # "graph_network": ["ER"],
+    # "graph_dynamics": ["UAU"],
+    # "simplicial_network": ["HIGHSCHOOL"],
+    # "simplicial_dynamics": ["SCUAU"],
+    "model": ["GAT", "SAT"],  # 至少选一个
+    "IS_WEIGHT": [False],
+    # 具体参数
+    "NUM_SAMPLES": [10000],
+    "NUM_TEST": [10],
+    "T_INIT": [10],
+    "EPOCHS": [30],
+    "NUM_NODES": [1000],
+    "SEED_FREC": [0.1],
+    "DEVICE": ['cuda'],
 }
 
 if __name__ == '__main__':
     # 跑实验
-    experiment_manager = ExperimentManager(params_exp_dict, fix_config)  # 返回实验对象
+    experiment_manager = ExperimentManager(params_exp_dict)  # 返回实验对象
     experiment_manager.run()

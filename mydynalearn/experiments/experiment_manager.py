@@ -7,11 +7,9 @@ from mydynalearn.util.params_dealer import ParamsDealer
 from Dao import Dao
 
 class ExperimentManager():
-    def __init__(self,params_exp_dict, fix_config):
-        self.params_exp_dict = params_exp_dict
-        params_dealer = ParamsDealer(params=self.params_exp_dict)
-        self.params_exp = params_dealer.get_parse_params()
-        self.fix_config = fix_config
+    def __init__(self,params_exp_dict):
+        params_dealer = ParamsDealer(params=params_exp_dict)
+        self.params_exp = params_dealer.get_parse_params() # 分解参数
         self.analyze_manager = AnalyzeManagerManager(self.exp_generator)
         self.logger = Log("ExperimentManager")
         self.TASKS = [
@@ -41,14 +39,13 @@ class ExperimentManager():
         :return:
         '''
         for params in self.params_exp:
-            config_exp = ConfigExp(*params)
-            config_exp.do_fix_config(self.fix_config)
+            config_exp = ConfigExp(**params)
             exp = Experiment(config_exp)
             yield exp
 
 
 
-    def run(self):
+    def run(self, ):
         """
         运行实验任务
         """

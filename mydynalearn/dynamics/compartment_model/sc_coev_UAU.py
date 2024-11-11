@@ -122,8 +122,8 @@ class SCCoevUAU(CompartmentModel):
         self.prime_A2 = torch.tensor(self.dynamics_config.prime_A2)
         self.MU_A1 = self.dynamics_config.MU_A1
         self.MU_A2 = self.dynamics_config.MU_A2
-        self.SEED_FREC_A1 = self.dynamics_config.SEED_FREC_A1
-        self.SEED_FREC_A2 = self.dynamics_config.SEED_FREC_A2
+        self.SEED_FREC_A1 = self.dynamics_config.SEED_FREC
+        self.SEED_FREC_A2 = self.dynamics_config.SEED_FREC
 
 
     def set_beta(self,eff_beta):
@@ -137,8 +137,8 @@ class SCCoevUAU(CompartmentModel):
         AWARE_SEED_INDEX_all = random.sample(range(self.NUM_NODES), NUM_SEED_NODES_A1+NUM_SEED_NODES_A2)
         AWARE_SEED_INDEX_A1 = AWARE_SEED_INDEX_all[:NUM_SEED_NODES_A1]
         AWARE_SEED_INDEX_A2 = AWARE_SEED_INDEX_all[NUM_SEED_NODES_A1:]
-        x0[AWARE_SEED_INDEX_A1] = self.NODE_FEATURE_MAP[self.STATES_MAP["A1U"]]
-        x0[AWARE_SEED_INDEX_A2] = self.NODE_FEATURE_MAP[self.STATES_MAP["UA2"]]
+        x0[AWARE_SEED_INDEX_A1] = self.NODE_FEATURE_MAP[self.STATES_MAP["A_1U"]]
+        x0[AWARE_SEED_INDEX_A2] = self.NODE_FEATURE_MAP[self.STATES_MAP["UA_2"]]
         self.x0=x0
 
     def get_adj_activate_simplex(self):
@@ -149,27 +149,27 @@ class SCCoevUAU(CompartmentModel):
         # inc_matrix_adj_act_edge：（节点数，边数）表示节点i与边j，相邻且j是激活边
         inc_matrix_adj_A1U_act_edge = self.get_inc_matrix_adjacency_activation(inc_matrix_col_feature=self.x1,
                                                                               _threshold_scAct=1,
-                                                                              target_state='A1U',
+                                                                              target_state='A_1U',
                                                                               inc_matrix_adj=self.network.inc_matrix_adj1)
         inc_matrix_adj_UA2_act_edge = self.get_inc_matrix_adjacency_activation(inc_matrix_col_feature=self.x1,
                                                                               _threshold_scAct=1,
-                                                                              target_state='UA2',
+                                                                              target_state='UA_2',
                                                                               inc_matrix_adj=self.network.inc_matrix_adj1)
         inc_matrix_adj_A1A2_act_edge = self.get_inc_matrix_adjacency_activation(inc_matrix_col_feature=self.x1,
                                                                               _threshold_scAct=1,
-                                                                              target_state='A1A2',
+                                                                              target_state='A_1A_2',
                                                                               inc_matrix_adj=self.network.inc_matrix_adj1)
         inc_matrix_adj_A1U_act_triangle = self.get_inc_matrix_adjacency_activation(inc_matrix_col_feature=self.x2,
                                                                                   _threshold_scAct=2,
-                                                                                  target_state='A1U',
+                                                                                  target_state='A_1U',
                                                                                   inc_matrix_adj=self.network.inc_matrix_adj2)
         inc_matrix_adj_UA2_act_triangle = self.get_inc_matrix_adjacency_activation(inc_matrix_col_feature=self.x2,
                                                                                   _threshold_scAct=2,
-                                                                                  target_state='UA2',
+                                                                                  target_state='UA_2',
                                                                                   inc_matrix_adj=self.network.inc_matrix_adj2)
         inc_matrix_adj_A1A2_act_triangle = self.get_inc_matrix_adjacency_activation(inc_matrix_col_feature=self.x2,
                                                                                   _threshold_scAct=2,
-                                                                                  target_state='A1A2',
+                                                                                  target_state='A_1A_2',
                                                                                   inc_matrix_adj=self.network.inc_matrix_adj2)
 
         # adj_act_edges：（节点数）表示节点i相邻激活边数量
@@ -192,9 +192,9 @@ class SCCoevUAU(CompartmentModel):
 
     def _get_nodeid_for_each_state(self):
         UU_index = torch.where(self.x0[:, self.STATES_MAP["UU"]] == 1)[0].to(self.DEVICE, dtype=torch.long)
-        A1U_index = torch.where(self.x0[:, self.STATES_MAP["A1U"]] == 1)[0].to(self.DEVICE, dtype=torch.long)
-        UA2_index = torch.where(self.x0[:, self.STATES_MAP["UA2"]] == 1)[0].to(self.DEVICE, dtype=torch.long)
-        A1A2_index = torch.where(self.x0[:, self.STATES_MAP["A1A2"]] == 1)[0].to(self.DEVICE, dtype=torch.long)
+        A1U_index = torch.where(self.x0[:, self.STATES_MAP["A_1U"]] == 1)[0].to(self.DEVICE, dtype=torch.long)
+        UA2_index = torch.where(self.x0[:, self.STATES_MAP["UA_2"]] == 1)[0].to(self.DEVICE, dtype=torch.long)
+        A1A2_index = torch.where(self.x0[:, self.STATES_MAP["A_1A_2"]] == 1)[0].to(self.DEVICE, dtype=torch.long)
         return UU_index, A1U_index, UA2_index, A1A2_index
 
 
@@ -248,24 +248,24 @@ class SCCoevUAU(CompartmentModel):
 
         # UU实际迁移概率
         true_tp[UU_index, self.STATES_MAP["UU"]]  = (q_A1*q_A2)[UU_index]
-        true_tp[UU_index, self.STATES_MAP["A1U"]] = ((1 - q_A1 * q_A2) * f_A1)[UU_index]
-        true_tp[UU_index, self.STATES_MAP["UA2"]] = ((1 - q_A1 * q_A2) * f_A2)[UU_index]
-        true_tp[UU_index, self.STATES_MAP["A1A2"]] = 0
+        true_tp[UU_index, self.STATES_MAP["A_1U"]] = ((1 - q_A1 * q_A2) * f_A1)[UU_index]
+        true_tp[UU_index, self.STATES_MAP["UA_2"]] = ((1 - q_A1 * q_A2) * f_A2)[UU_index]
+        true_tp[UU_index, self.STATES_MAP["A_1A_2"]] = 0
         # A1U实际迁移概率
         true_tp[A1U_index, self.STATES_MAP["UU"]]  = (self.MU_A1 * q_PRIME_A2 * q_DELTA_PRIME_A2)[A1U_index]
-        true_tp[A1U_index, self.STATES_MAP["A1U"]] = ((1 - self.MU_A1) * q_PRIME_A2 * q_DELTA_PRIME_A2)[A1U_index]
-        true_tp[A1U_index, self.STATES_MAP["UA2"]] = (self.MU_A1 * (1 - q_PRIME_A2 * q_DELTA_PRIME_A2))[A1U_index]
-        true_tp[A1U_index, self.STATES_MAP["A1A2"]] = ((1 - self.MU_A1) * (1 - q_PRIME_A2 * q_DELTA_PRIME_A2))[A1U_index]
+        true_tp[A1U_index, self.STATES_MAP["A_1U"]] = ((1 - self.MU_A1) * q_PRIME_A2 * q_DELTA_PRIME_A2)[A1U_index]
+        true_tp[A1U_index, self.STATES_MAP["UA_2"]] = (self.MU_A1 * (1 - q_PRIME_A2 * q_DELTA_PRIME_A2))[A1U_index]
+        true_tp[A1U_index, self.STATES_MAP["A_1A_2"]] = ((1 - self.MU_A1) * (1 - q_PRIME_A2 * q_DELTA_PRIME_A2))[A1U_index]
         # UA2实际迁移概率
         true_tp[UA2_index, self.STATES_MAP["UU"]] = (q_PRIME_A1 * q_DELTA_PRIME_A1 * self.MU_A2)[UA2_index]
-        true_tp[UA2_index, self.STATES_MAP["A1U"]] = ((1 - q_PRIME_A1 * q_DELTA_PRIME_A1) * self.MU_A2)[UA2_index]
-        true_tp[UA2_index, self.STATES_MAP["UA2"]] = (q_PRIME_A1 * q_DELTA_PRIME_A1 * (1 - self.MU_A2))[UA2_index]
-        true_tp[UA2_index, self.STATES_MAP["A1A2"]] = ((1 - q_PRIME_A1 * q_DELTA_PRIME_A1) * (1 - self.MU_A2))[UA2_index]
+        true_tp[UA2_index, self.STATES_MAP["A_1U"]] = ((1 - q_PRIME_A1 * q_DELTA_PRIME_A1) * self.MU_A2)[UA2_index]
+        true_tp[UA2_index, self.STATES_MAP["UA_2"]] = (q_PRIME_A1 * q_DELTA_PRIME_A1 * (1 - self.MU_A2))[UA2_index]
+        true_tp[UA2_index, self.STATES_MAP["A_1A_2"]] = ((1 - q_PRIME_A1 * q_DELTA_PRIME_A1) * (1 - self.MU_A2))[UA2_index]
         # UA2实际迁移概率
         true_tp[A1A2_index, self.STATES_MAP["UU"]] = 0
-        true_tp[A1A2_index, self.STATES_MAP["A1U"]] = recovery_prob * f_MU_A1
-        true_tp[A1A2_index, self.STATES_MAP["UA2"]] = recovery_prob * f_MU_A2
-        true_tp[A1A2_index, self.STATES_MAP["A1A2"]] = 1 - recovery_prob
+        true_tp[A1A2_index, self.STATES_MAP["A_1U"]] = recovery_prob * f_MU_A1
+        true_tp[A1A2_index, self.STATES_MAP["UA_2"]] = recovery_prob * f_MU_A2
+        true_tp[A1A2_index, self.STATES_MAP["A_1A_2"]] = 1 - recovery_prob
 
         le0_index = torch.where(true_tp.sum(dim=1) <= 0)[0]
         isnan_index = torch.where(torch.isnan(true_tp))[0]

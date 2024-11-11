@@ -34,6 +34,7 @@ ToySCER:
 
 CONFERENCE:
   NAME: 'CONFERENCE'
+  NUM_NODES: -1
   REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
   REALNET_SOURCEDATA_FILENAME: 'conference.dat'
   REALNET_NETDATA_FILENAME: 'conference.pkl'
@@ -41,6 +42,7 @@ CONFERENCE:
 
 HIGHSCHOOL:
   NAME: 'HIGHSCHOOL'
+  NUM_NODES: -1
   REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
   REALNET_SOURCEDATA_FILENAME: 'high_school.csv'
   REALNET_NETDATA_FILENAME: 'high_school.pkl'
@@ -48,6 +50,7 @@ HIGHSCHOOL:
 
 HOSPITAL:
   NAME: 'HOSPITAL'
+  NUM_NODES: -1
   REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
   REALNET_SOURCEDATA_FILENAME: 'hospital.dat'
   REALNET_NETDATA_FILENAME: 'hospital.pkl'
@@ -55,6 +58,7 @@ HOSPITAL:
 
 WORKPLACE:
   NAME: 'WORKPLACE'
+  NUM_NODES: -1
   REALNET_DATA_PATH: 'mydynalearn/networks/realnet_source'
   REALNET_SOURCEDATA_FILENAME: 'workplace.dat'
   REALNET_NETDATA_FILENAME: 'workplace.pkl'

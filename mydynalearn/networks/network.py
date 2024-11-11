@@ -11,8 +11,12 @@ class Network(DataHandler):
         self.logger = Log("Network")
         self.config = config
         self.DEVICE = self.config.DEVICE
+        self.init_metadata()
         parent_group = "network"  # 父分组的路径
-        cur_group = config.network.NAME  # 当前网络的组名
+        cur_group = (
+            f"NETWORK_NAME_{self.metadata['NAME']}_"
+            f"NUM_NODES_{self.metadata['NUM_NODES']}"
+        )  # 当前网络的组名
         super().__init__(parent_group=parent_group, cur_group=cur_group)
 
     def set_attr(self,att_dict):

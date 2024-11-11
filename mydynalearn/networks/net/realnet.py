@@ -9,6 +9,7 @@ import os
 import pickle
 class Realnet(Network):
     def __init__(self, config):
+        config.network['NUM_NODES'] = -1
         super().__init__(config)
 
     def _update_adj(self):

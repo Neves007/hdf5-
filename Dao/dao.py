@@ -5,7 +5,7 @@ import numpy as np
 class Dao:
     f = None  # 全局静态属性，用于存储打开的 HDF5 文件
 
-    def __init__(self, parent_group=".", cur_group_name="dataset"):
+    def __init__(self, parent_group=".", cur_group_name="dataset", dao_name = "database"):
         """
         初始化 Dao 对象，设置文件路径、父组和当前组的名称，并生成组的绝对路径。
 
@@ -13,10 +13,12 @@ class Dao:
         - parent_group: 父组的名称。
         - cur_group_name: 当前组的名称。
         """
-        self.data_file = "output/dataset.h5"  # 数据文件名称
+        self.data_file = f"output/{dao_name}.h5"  # 数据文件名称
         self.parent_group = parent_group  # 父组的名称
-        self.cur_group = cur_group_name  # 当前组的名称
-        self.group_path = self.get_group_path()  # 生成组的绝对路径
+        cur_group = cur_group_name  # 当前组的名称
+        self.group_path = self.set_group_path(cur_group)  # 生成组的绝对路径
+
+
 
     def get_group_obj(self):
         if self.group_path in self.f:
@@ -79,14 +81,14 @@ class Dao:
                 return None
         return self.dataset
 
-    def get_group_path(self):
+    def set_group_path(self,cur_group):
         """
         生成并返回当前组的绝对路径。
 
         返回：
         - group_path: 当前组的绝对路径字符串。
         """
-        return f"{self.parent_group}/{self.cur_group}"
+        return f"{self.parent_group}/{cur_group}"
 
     def save(self):
         """

@@ -34,21 +34,47 @@ class EpochTasks(DataHandler):
         self.optimizer = self.get_optimizer(self.model.parameters())
         self.scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=0.1, patience=4, eps = 1e-8, threshold =0.1)
         #
-        parent_group = f"model/train/{self.config.model.NAME}/{self.metadata['NETWORK_NAME']}_{self.metadata['DYNAMICS_NAME']}"
-        cur_group = f"epoch_{self.epoch_index}"
+        parent_group = "model"
+        cur_group = (
+                     f"NETWORK_NAME_{self.metadata['NETWORK_NAME']}_"
+                     f"NUM_NODES_{self.metadata['NUM_NODES']}/"
+                     f"DYNAMIC_NAME_{self.metadata['DYNAMIC_NAME']}_"
+                     f"T_INIT_{self.metadata['T_INIT']}_"
+                     f"SEED_FREC_{self.metadata['SEED_FREC']}/"
+                     f"MODEL_NAME_{self.metadata['MODEL_NAME']}/"
+                     f"epoch_{self.epoch_index}"
+                     )
         DataHandler.__init__(self, parent_group, cur_group)
         self.params_file = self.metadata['params_file']
 
     def init_metadata(self):
         metadata = {}
-        metadata['NETWORK_NAME'] = self.config.network.NAME
-        metadata['DYNAMICS_NAME'] = self.config.dynamics.NAME
-        metadata['MODEL_NAME'] = self.config.model.NAME
-        metadata['EPOCHS'] = self.config.model.EPOCHS
-        metadata['epoch_index'] = self.epoch_index
+        metadata['DEVICE'] = self.config.DEVICE
+        # network
+        metadata['NETWORK_NAME'] = self.config.network['NAME']
+        metadata["NUM_NODES"] = self.config.network['NUM_NODES']
+        # dynamics
+        metadata['DYNAMIC_NAME'] = self.config.dynamics['NAME']
+        metadata["SEED_FREC"] = self.config.dynamics['SEED_FREC']
         metadata["STATES"] = list(self.config.dynamics.STATES_MAP.keys())
-        params_file_name = f"{metadata['MODEL_NAME']}_{metadata['NETWORK_NAME']}_{metadata['DYNAMICS_NAME']}_epoch_{self.epoch_index}.pth"
-        metadata['params_file'] = os.path.join(self.config.model.model_dir,params_file_name)
+        # dataset
+        metadata['NUM_SAMPLES'] = self.config.dataset['NUM_SAMPLES']
+        metadata['T_INIT'] = self.config.dataset['T_INIT']
+        metadata['IS_WEIGHT'] = self.config.dataset['IS_WEIGHT']
+        # model
+        metadata['EPOCHS'] = self.config.model.EPOCHS
+        metadata['MODEL_NAME'] = self.config.model.NAME
+        metadata['epoch_index'] = self.epoch_index
+        params_file_name = (
+            f"NETWORK_NAME_{metadata['NETWORK_NAME']}_"
+            f"NUM_NODES_{metadata['NUM_NODES']}_"
+            f"DYNAMIC_NAME_{metadata['DYNAMIC_NAME']}_"
+            f"T_INIT_{metadata['T_INIT']}_"
+            f"SEED_FREC_{metadata['SEED_FREC']}_"
+            f"MODEL_NAME_{metadata['MODEL_NAME']}_"
+            f"epoch_{metadata['epoch_index']}.pth"
+        )
+        metadata['params_file'] = os.path.join(self.config.model.model_dir, params_file_name)
         self.metadata = metadata
 
     def save_params(self):

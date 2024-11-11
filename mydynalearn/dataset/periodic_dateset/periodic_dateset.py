@@ -12,6 +12,7 @@ from mydynalearn.logger import Log
 from mydynalearn.util.lazy_loader import PickleLazyLoader
 from Dao import DataHandler
 
+
 class PeriodicDateset(DataHandler):
     '''数据集类
     通过网络network和dynamics来说生成动力学数据集
@@ -20,19 +21,25 @@ class PeriodicDateset(DataHandler):
         - run_dynamic_process 连续时间动力学数据
         - run 生成动力学数据
     '''
+
     def __init__(self, config) -> None:
         self.config = config
         self.dataset_config = config.dataset
         self.logger = Log("PeriodicDateset")
         self.init_metadata()
         parent_group = "dataset/periodic_evolution"
-        cur_group = f"{self.metadata['NETWORK_NAME']}_{self.metadata['DYNAMIC_NAME']}"
+        cur_group = (f"NETWORK_NAME_{self.metadata['NETWORK_NAME']}_"
+                     f"NUM_NODES_{self.metadata['NUM_NODES']}/"
+                     f"DYNAMIC_NAME_{self.metadata['DYNAMIC_NAME']}_"
+                     f"T_INIT_{self.metadata['T_INIT']}_"
+                     f"SEED_FREC_{self.metadata['SEED_FREC']}"
+                     )
         DataHandler.__init__(self, parent_group, cur_group)
-
 
     def get_network(self):
         network = get_network(self.config)
         return network
+
     def get_dynamics(self):
         dynamics = get_dynamics(self.config)
         return dynamics
@@ -40,12 +47,17 @@ class PeriodicDateset(DataHandler):
     def init_metadata(self):
         metadata = {}
         metadata['DEVICE'] = self.config.DEVICE
-        metadata['DYNAMIC_NAME'] = self.config.dynamics['NAME']
+        # network
         metadata['NETWORK_NAME'] = self.config.network['NAME']
-        metadata['NUM_SAMPLES'] = self.dataset_config['NUM_SAMPLES']
+        metadata["NUM_NODES"] = self.config.network['NUM_NODES']
+        # dynamics
+        metadata['DYNAMIC_NAME'] = self.config.dynamics['NAME']
+        metadata["SEED_FREC"] = self.config.dynamics['SEED_FREC']
+        metadata["STATES"] = list(self.config.dynamics.STATES_MAP.keys())
+        # dataset
+        metadata['NUM_SAMPLES'] = self.config.dataset['NUM_SAMPLES']
+        metadata['T_INIT'] = self.config.dataset['T_INIT']
         metadata['IS_WEIGHT'] = self.dataset_config['IS_WEIGHT']
-        metadata['STATES_MAP_key'] = list(self.config.dynamics['STATES_MAP'].keys())
-        metadata['STATES_MAP_value'] = list(self.config.dynamics['STATES_MAP'].values())
         self.set_metadata(metadata)
 
     def begin(self):
@@ -95,4 +107,3 @@ class PeriodicDateset(DataHandler):
             "weight_T": self.weight_T,
         }
         self.set_dataset(dataset)
-
