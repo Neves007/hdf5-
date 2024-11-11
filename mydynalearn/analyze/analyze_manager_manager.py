@@ -1,6 +1,7 @@
 from mydynalearn.logger import Log
 from mydynalearn.analyze.analyze_manager import *
 from mydynalearn.config.yaml_config.configfile import ConfigFile
+
 class AnalyzeManagerManager():
     # todo: 添加save和load 
     def __init__(self, exp_generator):
@@ -11,6 +12,7 @@ class AnalyzeManagerManager():
         self.config_analyze = ConfigFile.get_config_analyze()
         self.exp_generator = exp_generator
         self.epoch_analyze_manager = EpochAnalyzeManager(self.config_analyze, exp_generator)
+
         self.logger = Log("AnalyzeManagerManager")
         self.TASKS = [
             "analyze_every_epoch",
