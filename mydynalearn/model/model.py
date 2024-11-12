@@ -20,12 +20,11 @@ class Model():
     def run(self):
         self.logger.increase_indent()
         self.logger.log("Beginning model training...")
-        for epoch_tasks in self.epoch_task_generator:
+        for epoch_tasks in self.epoch_task_generator():
             epoch_tasks.run()
             epoch_tasks.low_the_lr()
         self.logger.decrease_indent()
 
-    @property
     def epoch_task_generator(self):
         for epoch_index in range(self.EPOCHS):
             epoch_task = self.get_epoch_task(epoch_index)

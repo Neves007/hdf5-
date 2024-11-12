@@ -1,4 +1,5 @@
-from mydynalearn.analyze.analyze_result_handler import EpochResultHandlerGeneralPerformance
+from mydynalearn.analyze.analyze_result_handler.epoch_result_handler_general_performance import EpochResultHandlerGeneralPerformance
+
 class EpochAnalyzer():
     def __init__(self, config_analyze, epoch_task):
         self.config_analyze = config_analyze
@@ -8,6 +9,5 @@ class EpochAnalyzer():
     def run(self):
         self.epoch_result_handler_general_performance.run()
 
-
     def get_analyze_result(self):
-         self.epoch_result_handler_general_performance.get_dataset()
+         return self.epoch_result_handler_general_performance.get_dataset()

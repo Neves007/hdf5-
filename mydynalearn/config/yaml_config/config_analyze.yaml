@@ -1,4 +1,4 @@
 
 epoch_analyze_dir: "analyze/epoch_analyze"
-exp_analyze_dir: "analyze/exp"
-overall_analyze_dir: "analyze/overall"
+model_analyze_dir: "analyze/model_analyze"
+overall_analyze_dir: "analyze/overall_analyze"

@@ -46,7 +46,7 @@ params_exp_dict = {
     # 实验参数
     "graph_network": ["ER", "SF"],
     "graph_dynamics": ["UAU", "CompUAU", "CoopUAU", "AsymUAU"],
-    "simplicial_network": ["SCER", "SCSF", "CONFERENCE", "HIGHSCHOOL", "HOSPITAL", "WORKPLACE"],
+    "simplicial_network": ["SCER", "SCSF"],
     "simplicial_dynamics": ["SCUAU", "SCCompUAU", "SCCoopUAU", "SCAsymUAU"],
     # "graph_network": ["ER"],
     # "graph_dynamics": ["UAU"],
@@ -55,11 +55,11 @@ params_exp_dict = {
     "model": ["GAT", "SAT"],  # 至少选一个
     "IS_WEIGHT": [False],
     # 具体参数
-    "NUM_SAMPLES": [10000],
-    "NUM_TEST": [10],
-    "T_INIT": [10],
-    "EPOCHS": [30],
-    "NUM_NODES": [1000],
+    "NUM_SAMPLES": [10],
+    "NUM_TEST": [1],
+    "T_INIT": [1],
+    "EPOCHS": [3],
+    "NUM_NODES": [100],
     "SEED_FREC": [0.1],
     "DEVICE": ['cuda'],
 }

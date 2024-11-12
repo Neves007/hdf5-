@@ -29,10 +29,9 @@ class ExperimentManager():
         运行所有实验
         '''
         # 跑实验数据
-        for exp in self.exp_generator:
+        for exp in self.exp_generator():
             exp.run()
 
-    @property
     def exp_generator(self):
         '''
         实验生成器

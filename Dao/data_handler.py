@@ -3,6 +3,9 @@ import pickle
 
 import torch
 import numpy as np
+from sympy.stats.sampling.sample_numpy import numpy
+import h5py
+
 from Dao.dao import Dao
 from abc import abstractmethod
 from mydynalearn.logger import Log
@@ -140,8 +143,28 @@ class DataHandler():
             elif isinstance(value, dict):
                 serialized_value = pickle.dumps(value)
                 dataset[key] = serialized_value
-    @abstractmethod
+            elif isinstance(value, np.ndarray):
+                # 如果是 numpy 数组，检查是否为字符串类型
+                if np.issubdtype(value.dtype, np.str_) or np.issubdtype(value.dtype, np.bytes_):
+                    # 将 numpy 字符串类型转换为 HDF5 支持的字符串类型
+                    dataset[key] = value.astype(h5py.string_dtype(encoding='utf-8'))
+                else:
+                    # 否则直接存储原始 numpy 数组
+                    dataset[key] = value
+
+            elif isinstance(value, list) and all(isinstance(item, str) for item in value):
+                # 如果是 Python 字符串数组（list of str），转换为 numpy 字符串数组并再转换为 HDF5 支持的类型
+                dataset[key] = np.array(value, dtype=h5py.string_dtype(encoding='utf-8'))
+
+        pass
+
     def convert_from_storage_format(self, dataset):
+        for key, value in dataset.items():
+            # 检查字段是否为 numpy 数组
+            if isinstance(value, np.ndarray) and value.shape != ():
+                # 如果是字节字符串类型，将其转换为字符串类型
+                if isinstance(value[0], bytes):
+                    dataset[key] = value.astype(str)
         return dataset
     @classmethod
     def build_dataset(self,*args,**kwargs):

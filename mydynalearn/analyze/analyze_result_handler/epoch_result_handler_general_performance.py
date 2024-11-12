@@ -13,8 +13,8 @@ class EpochResultHandlerGeneralPerformance(AnalyzeResultHandler):
         super().__init__(parent_group, cur_group)
 
     def get_parent_group(self):
-        epoch_analyze_dir = self.config_analyze['epoch_analyze_dir']
-        parent_group = f"{epoch_analyze_dir}/GeneralPerformance"
+        analyze_dir = self.config_analyze['epoch_analyze_dir']
+        parent_group = f"{analyze_dir}/GeneralPerformance"
         return parent_group
 
     def init_metadata(self):
@@ -26,7 +26,7 @@ class EpochResultHandlerGeneralPerformance(AnalyzeResultHandler):
         self.convert_to_storage_format(self.result)
 
     def analyze_result(self):
-        epoch_inde = self.result['epoch_index']
+        epoch_index = self.result['epoch_index']
         mean_loss = self.result['mean_loss']
         node_loss = self.result['node_loss']
         R = self.result['R']
@@ -40,7 +40,7 @@ class EpochResultHandlerGeneralPerformance(AnalyzeResultHandler):
         true_trans_type = [get_transtype_latex(s, t) for s, t in zip(x_lable, y_ob_lable)]
         pred_trans_type = [get_transtype_latex(s, t) for s, t in zip(x_lable, y_pred_lable)]
         analyze_result = {
-            "epoch_inde": epoch_inde,
+            "epoch_index": epoch_index,
             "mean_loss": mean_loss,
             "node_loss": node_loss,
             "R": R,

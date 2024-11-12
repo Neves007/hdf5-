@@ -27,4 +27,3 @@ class AnalyzeResultHandler(DataHandler):
         self.init_result()
         dataset = self.analyze_result()
         self.set_dataset(dataset)
-        pass

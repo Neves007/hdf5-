@@ -2,6 +2,7 @@ from mydynalearn.logger import Log
 from mydynalearn.analyze.analyze_manager import *
 from mydynalearn.config.yaml_config.configfile import ConfigFile
 
+
 class AnalyzeManagerManager():
     # todo: 添加save和load 
     def __init__(self, exp_generator):
@@ -11,52 +12,20 @@ class AnalyzeManagerManager():
         """
         self.config_analyze = ConfigFile.get_config_analyze()
         self.exp_generator = exp_generator
+        # 初始化 Epoch 分析管理器
         self.epoch_analyze_manager = EpochAnalyzeManager(self.config_analyze, exp_generator)
+        # 初始化模型分析管理器
+        self.model_analyze_manager = ModelAnalyzeManager(self.config_analyze)
+        # 初始化总体分析管理器
+        self.overall_analyze_manager = OverallAnalyzeManager(self.config_analyze)
 
-        self.logger = Log("AnalyzeManagerManager")
-        self.TASKS = [
-            "analyze_every_epoch",
-            "analyze_every_exp",
-            "analyze_overall"
-        ]
 
-    def analyze_every_epoch(self):
-        '''
-        分析每个epoch
-        :return:
-        '''
-        self.epoch_analyze_manager.run()
-        pass
-
-    def analyze_every_exp(self):
-        '''
-        分析每个实验的所有epoch
-        :return:
-        '''
-        pass
-
-    def analyze_overall(self):
-        '''
-        分析所有实验
-        :return:
-        '''
-        pass
-
-    def get_result_every_epoch(self):
-        return self.epoch_analyze_manager.analyze_result_generator
-
+        # 通过职责链将各个分析模块组装起来，使用观察者模式
+        self.epoch_analyze_manager.subscribe(self.model_analyze_manager)
+        self.model_analyze_manager.subscribe(self.overall_analyze_manager)
 
     def run(self):
         """
         对所有实验进行分析
         """
-        for task_name in self.TASKS:
-            task_method = getattr(self, task_name, None)
-            if callable(task_method):
-                self.logger.increase_indent()
-                self.logger.log(f"Do exp task, name = {task_name}.")
-                task_method()
-                self.logger.decrease_indent()
-            else:
-                raise ValueError(f"{task_name} is an invalid task, possible tasks are {self.TASKS}")
-
+        self.epoch_analyze_manager.run()
