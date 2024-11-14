@@ -1,7 +1,7 @@
 import torch
-import torch.nn.functional as F
 import torch.nn as nn
-from mydynalearn.networks.getter import get as get_network
+
+
 class GATLayer_regular(nn.Module):
 
     def __init__(self,config, input_size, output_size, bias=True):

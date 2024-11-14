@@ -1,7 +1,7 @@
 import random
 import torch
 from ..util.util import nodeToEdge_matrix
-from mydynalearn.networks.network import Network
+from ..network import Network
 class ER(Network):
     def __init__(self, net_config):
         super().__init__(net_config)

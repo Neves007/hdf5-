@@ -10,10 +10,11 @@ from Dao.dao import Dao
 from abc import abstractmethod
 from mydynalearn.logger import Log
 class DataHandler():
+    dao_name = None
     def __init__(self, parent_group, cur_group=''):
         self.parent_group = parent_group  # 父分组的路径
         self.cur_group = cur_group  # 当前组名
-        self.dao = Dao(parent_group, cur_group)  # Dao对象用于数据存储和管理
+        self.dao = Dao(parent_group, cur_group, self.dao_name)  # Dao对象用于数据存储和管理
         self.init_metadata()
         self.log = Log("DataHandler")
 
@@ -161,10 +162,14 @@ class DataHandler():
     def convert_from_storage_format(self, dataset):
         for key, value in dataset.items():
             # 检查字段是否为 numpy 数组
-            if isinstance(value, np.ndarray) and value.shape != ():
-                # 如果是字节字符串类型，将其转换为字符串类型
-                if isinstance(value[0], bytes):
-                    dataset[key] = value.astype(str)
+            if isinstance(value, np.ndarray):
+                if value.shape != ():
+                    # 如果是字节字符串类型，将其转换为字符串类型
+                    if isinstance(value[0], bytes):
+                        dataset[key] = value.astype(str)
+                else:
+                    dataset[key] = value.item()
+
         return dataset
     @classmethod
     def build_dataset(self,*args,**kwargs):

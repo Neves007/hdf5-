@@ -1,27 +1,19 @@
-from mydynalearn.model.nn.nnlayers import *
-from time import sleep
 import os
-import pickle
-import torch.nn as nn
 import torch
 import numpy as np
 from mydynalearn.networks.getter import get as net_getter
-from mydynalearn.dynamics.getter import get as dynamics_getter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from mydynalearn.model.optimizer import get as get_optimizer
-from mydynalearn.model.util import *
-import copy
-from mydynalearn.logger.logger import *
-from tqdm import tqdm
 from mydynalearn.model.getter import get as get_model
 from mydynalearn.model.batch_task import BatchTask
 from mydynalearn.logger import Log
 from Dao import DataHandler
 from mydynalearn.dataset import SplitDataset
-from torch.utils.data import Dataset, DataLoader, random_split
+
+
 class EpochTasks(DataHandler):
-    def __init__(self, config, epoch_index):
+    def __init__(self, config, epoch_index, *args, **kwargs):
         self.config = config
         self.epoch_index = epoch_index
         self.init_metadata()
@@ -46,6 +38,8 @@ class EpochTasks(DataHandler):
                      )
         DataHandler.__init__(self, parent_group, cur_group)
         self.params_file = self.metadata['params_file']
+
+
 
     def init_metadata(self):
         metadata = {}
@@ -146,7 +140,7 @@ class EpochTasks(DataHandler):
         self.save_params()
 
 
-    def get_test_rulsult(self):
+    def get_test_result(self):
         self.logger.increase_indent()
         self.logger.log("run test")
         self.model.eval()

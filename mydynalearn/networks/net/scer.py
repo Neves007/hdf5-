@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from scipy.special import comb
 from ..util.util import nodeToEdge_matrix,nodeToTriangle_matrix
-from mydynalearn.networks.network import Network
+from ..network import Network
 class SCER(Network):
     def __init__(self, net_config):
         super().__init__(net_config)

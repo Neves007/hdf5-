@@ -1,5 +1,4 @@
 from mydynalearn.model.util.inout_linear_layers import inLinearLayers,outLinearLayers
-from mydynalearn.model.nn import GraphAttentionLayer,SimplexAttentionLayer
 from mydynalearn.model.nn.getter import get as gnn_getter
 
 

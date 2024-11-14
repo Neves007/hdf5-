@@ -6,7 +6,7 @@ import numpy as np
 from easydict import EasyDict as edict
 
 class ConfigFile:
-    work_dir_path = 'mydynalearn/config/yaml_config/'
+    work_dir_path = os.path.dirname(__file__)
 
     config_analyze_file_name = 'config_analyze.yaml'
     config_dataset_file_name = 'config_dataset.yaml'

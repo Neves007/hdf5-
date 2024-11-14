@@ -1,12 +1,10 @@
-import random
-import numpy as np
 import torch
-from scipy.special import comb
 from ..util.util import nodeToEdge_matrix,nodeToTriangle_matrix
-from mydynalearn.networks.network import Network
-from mydynalearn.networks.util.real_network import generate_real_network
+from ..util.real_network import generate_real_network
+from ..network import Network
 import os
-import pickle
+
+
 class Realnet(Network):
     def __init__(self, config):
         config.network['NUM_NODES'] = -1
@@ -59,7 +57,8 @@ class Realnet(Network):
 
     def create_datawork(self):
 
-        netsourve_file = os.path.join(self.REALNET_DATA_PATH, self.REALNET_SOURCEDATA_FILENAME)
+        netsourve_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'realnet_source', self.REALNET_SOURCEDATA_FILENAME)
+
         nodes, edges, triangles = generate_real_network(netsourve_file)
         NUM_NODES = nodes.shape[0]
         NUM_EDGES = edges.shape[0]

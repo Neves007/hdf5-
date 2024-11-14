@@ -1,6 +1,6 @@
 import torch
-from ..util.util import nodeToEdge_matrix,nodeToTriangle_matrix
-from mydynalearn.networks.network import Network
+from ..util.util import nodeToEdge_matrix
+from ..network import Network
 import networkx as nx
 # todo：相邻关系
     # inc_matrix_adj_info

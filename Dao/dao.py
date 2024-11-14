@@ -4,16 +4,23 @@ import numpy as np
 
 class Dao:
     f = None  # 全局静态属性，用于存储打开的 HDF5 文件
+    data_file = None  # 全局静态属性，用于存储数据文件路径
 
-    def __init__(self, parent_group=".", cur_group_name="dataset", dao_name = "database"):
+    def __init__(self, parent_group=".", cur_group_name="dataset", dao_name=None):
         """
         初始化 Dao 对象，设置文件路径、父组和当前组的名称，并生成组的绝对路径。
 
         参数：
         - parent_group: 父组的名称。
         - cur_group_name: 当前组的名称。
+        - dao_name: 数据文件名称（仅在首次实例化时需要传入）。
         """
-        self.data_file = f"output/{dao_name}.h5"  # 数据文件名称
+        if Dao.data_file is None and dao_name is not None:
+            Dao.data_file = f"output/{dao_name}.h5"  # 仅在首次实例化时设置 data_file
+
+        if Dao.data_file is None:
+            raise ValueError("Dao.data_file 未设置。首次实例化时需要提供 dao_name 参数。")
+
         self.parent_group = parent_group  # 父组的名称
         cur_group = cur_group_name  # 当前组的名称
         self.group_path = self.set_group_path(cur_group)  # 生成组的绝对路径
@@ -124,7 +131,7 @@ class Dao:
 
     def __enter__(self):
         if Dao.f is None:
-            Dao.f = h5py.File(self.data_file, "a")
+            Dao.f = h5py.File(Dao.data_file, "a")  # 仅在首次调用时打开文件
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):

@@ -2,12 +2,10 @@ import os.path
 import pickle
 import torch
 from tqdm import *
-from abc import abstractmethod
-from mydynalearn.networks import *
 from mydynalearn.networks.getter import get as get_network
 from mydynalearn.dynamics.getter import get as get_dynamics
-from torch.utils.data import Dataset
-from torch.utils.data import DataLoader
+
+
 class TestDynamicDataset():
     '''数据集类
     通过网络network和dynamics来说生成动力学数据集

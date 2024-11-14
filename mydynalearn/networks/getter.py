@@ -1,7 +1,7 @@
 import loguru
+from .net import *
 from mydynalearn.config import ConfigExp
 
-from mydynalearn.networks import *
 __networks__ = {
     "ER": ER,
     "SF": SF,

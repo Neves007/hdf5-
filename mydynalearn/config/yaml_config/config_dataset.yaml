@@ -1,6 +1,6 @@
 default:
-    NUM_SAMPLES: 10000
+    NUM_SAMPLES: 10
     TIME_EVOLUTION_STEPS: 200
-    NUM_TEST: 100
-    T_INIT: 10
+    NUM_TEST: 1
+    T_INIT: 1
     IS_WEIGHT: false
