@@ -1,10 +1,11 @@
 
-from .visualizer.getter import get as get_visualizer
+from mydynalearn.visualize.visualizer.getter import get as get_visualizer
 class visualizerManager():
     def __init__(self,analyze_result_output):
         self.analyze_result_output = analyze_result_output
+        # todo 更新参数存档点 4：修改visualizer_name_list调整所需可视化任务
         self.visualizer_name_list = [
-            "FigYtrureYpred",
+            "FigYtrureYpred"
         ]
 
     def run(self):

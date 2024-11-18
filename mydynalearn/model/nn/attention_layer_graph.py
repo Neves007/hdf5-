@@ -26,6 +26,7 @@ class GATLayer_regular(nn.Module):
         adj : n * n  sparse signed orientation matrix
         output : n * k dense matrix of new feature vectors
         """
+
         x0_i = self.leakyrelu(self.input_linear_layer1(x0))
         x0_j = self.leakyrelu(self.input_linear_layer2(x0))
         adj = network.inc_matrix_adj0

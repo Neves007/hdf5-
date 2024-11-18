@@ -28,7 +28,7 @@ class DataHandler():
         self.__dataset_reflection()
 
     def get_metadata(self):
-        return self.metadata
+        return self.dao.get_metadata()
 
     def get_dataset(self):
         if not hasattr(self, 'dataset'):
@@ -56,10 +56,6 @@ class DataHandler():
         # meta数据是否存在
         elif self.dao.get_metadata()==None:
             return True
-        # 检查存储的元数据是否与当前对象的元数据匹配
-        elif self.dao.get_metadata().keys() != self.metadata.keys():
-            del self.dao.f[self.dao.group_path]
-            return True  # 不匹配时，需要重新构建
         else:
             return False
 

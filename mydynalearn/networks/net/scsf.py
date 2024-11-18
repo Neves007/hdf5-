@@ -1,11 +1,6 @@
 import torch
 from ..util.util import nodeToEdge_matrix,nodeToTriangle_matrix
 from ..network import Network
-# todo：相邻关系
-    # inc_matrix_adj_info
-# todo: 管理过程
-    # 保存和读取
-    # 输出
 
 class SCSF(Network):
     def __init__(self,net_config):

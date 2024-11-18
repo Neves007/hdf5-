@@ -5,8 +5,9 @@ Experiment_SAT_HighOrder_SCUAU_Attention：使用 SAT 模型对高阶玩具网�
 Experiment_SAT_HighOrder_Ablation：使用 SAT 模型对高阶网络动力学进行消融实验，通过调整参数探索不同配置的影响。
 Experiment_SAT_vs_GNN_HighOrder：使用 SAT 模型和不同的 GNN 模型对高阶网络动力学进行实验，比较 SAT 模型与现有 GNN 模型在高阶动力学学习性能上的差异。
 '''
-from .params_dealer import ParamsDealer
-from .experiment_manager import ExperimentManager
+from Experiment_SAT_HighOrder_Ablation.params_dealer import ParamsDealer
+from Experiment_SAT_HighOrder_Ablation.experiment_manager import ExperimentManager
+
 ''' 所有参数
     "graph_network": ["ER", "SF"],
     "graph_dynamics": ["UAU", "CompUAU", "CoopUAU", "AsymUAU"],

@@ -79,4 +79,4 @@ class ParamsDealer:
         params_real_simplex = self.get_real_simplex_params()
         # todo 更新参数存档点 3：修改parse_params的组成
         # 根据标志选择返回高阶或全部组合
-        return params_graph + params_simplex  + params_real_simplex
+        return params_simplex

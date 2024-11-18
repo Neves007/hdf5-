@@ -59,13 +59,12 @@ class Dao:
         返回：
         - metadata: 一个字典，包含元数据。
         """
-        if not hasattr(self, 'metadata'):
-            if self.group_path in Dao.f:
-                # 从文件中加载元数据并赋值给 self.metadata
-                self.metadata = {name: Dao.f[self.group_path].attrs[name] for name in Dao.f[self.group_path].attrs}
-            else:
-                return None
-        return self.metadata
+        if self.group_path in Dao.f:
+            # 从文件中加载元数据并赋值给 self.metadata
+            self.metadata = {name: Dao.f[self.group_path].attrs[name] for name in Dao.f[self.group_path].attrs}
+            return self.metadata
+        else:
+            return None
 
     def get_dataset(self):
         """

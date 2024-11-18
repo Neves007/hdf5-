@@ -14,7 +14,7 @@ class BatchTask():
     def weighted_cross_entropy(self,y_true, y_pred, weights=None):
         y_pred = torch.clamp(y_pred, 1e-15, 1 - 1e-15)
         loss = weights * (-y_true * torch.log(y_pred)).sum(-1)
-        return loss.mean()
+        return loss.sum()
 
     def _do_batch_(self, model, dataset_per_time):
         '''batch

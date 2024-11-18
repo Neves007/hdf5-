@@ -137,7 +137,6 @@ class CoevUAU(CompartmentModel):
         old_x0, old_x1, true_tp = self._preparing_spreading_data()
         self._dynamic_for_node(true_tp)
         new_x0 = self.get_transition_state(true_tp)
-        # todo：修改weight
 
         weight = 1. * torch.ones(self.NUM_NODES).to(self.DEVICE)
         spread_result = {

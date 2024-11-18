@@ -172,7 +172,6 @@ class DynamicDatasetTimeEvolution(Dataset):
         self.logger.log("run time evolution dynamics dataset")
         if self.is_dataset_exist():
             dataset = self._load_dataset()
-            # todo: 修改名称错误
         else:
             dataset = self._build_and_save_new_dataset()
         self.logger.decrease_indent()

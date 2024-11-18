@@ -14,11 +14,15 @@ class GraphAttentionModel(nn.Module):
         self.out_layers = self._nnlayer.get_out_layers()
         self.DEVICE = config.DEVICE
 
-    def forward(self,x0, y_ob, y_true, weight):
-        network = get_network(self.config)
-        network.load()
-        dynamics = get_dynamics(self.config)
+    def set_netowrk(self):
+        self.network = get_network(self.config)
+        self.network.load()
+    def set_dynamics(self):
+        self.dynamics = get_dynamics(self.config)
 
+    def forward(self,x0, y_ob, y_true, weight):
+        if not hasattr(self, "network"):
+            self.set_netowrk()
         # 数据预处理
         x0 = x0.squeeze()
         y_ob = y_ob.squeeze()
@@ -27,7 +31,7 @@ class GraphAttentionModel(nn.Module):
         # attention
         x0_in = self.in_layer(x0)
         args = {
-            "network": network,
+            "network": self.network,
             "x0": x0_in}
         x = self.gat_layer_1(**args)
         out = self.out_layers(x)

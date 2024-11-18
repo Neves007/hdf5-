@@ -44,7 +44,6 @@ class SATLayer_regular(nn.Module):
         # e矩阵转为稀疏矩阵
         attention = torch.sparse_coo_tensor(indices, attention_v,size=inc_matrix_adj.shape)
         # 考虑attention权重的特征。
-        # todo： 改为torch.sigmoid（torch.sparse.mm(attention, xj)）
         output = torch.sigmoid(torch.sparse.mm(attention, xj))
         return output
 
