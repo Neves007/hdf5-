@@ -28,7 +28,6 @@ class EpochAnalyzer():
         - dict: 包含分析配置和数据集的关键信息的字典。
         """
         metadata = self.epoch_general_performance_handler.get_metadata()  # 获取元数据
-        dataset = self.epoch_general_performance_handler.get_dataset()  # 获取数据集信息
         # 构造字典，包含必要的元数据和数据集信息
         dict = {
             "NETWORK_NAME": metadata['NETWORK_NAME'],
@@ -42,7 +41,8 @@ class EpochAnalyzer():
             "T_INIT": metadata['T_INIT'],
             "EPOCHS": metadata['EPOCHS'],
             "epoch_index": metadata['epoch_index'],
-            "R": dataset['R'],
+            "R": metadata['R'],
+            "mean_loss": metadata['mean_loss'],
         }
         return dict
 

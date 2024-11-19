@@ -87,4 +87,15 @@ class EpochGeneralPerformanceHandler(AnalyzeResultHandler):
             "true_trans_type": true_trans_type,
             "pred_trans_type": pred_trans_type,
         }
+        # 检查并添加 network 的附加属性
+        if "NUM_NEIGHBOR_NODES" in self.result.keys():
+            analyze_result["NUM_NEIGHBOR_NODES"] = self.result['NUM_NEIGHBOR_NODES']
+        if "NUM_NEIGHBOR_EDGES" in self.result.keys():
+            analyze_result["NUM_NEIGHBOR_EDGES"] = self.result['NUM_NEIGHBOR_EDGES']
+        if "NUM_NEIGHBOR_TRIANGLES" in self.result.keys():
+            analyze_result["NUM_NEIGHBOR_TRIANGLES"] = self.result['NUM_NEIGHBOR_TRIANGLES']
+        self.metadata.update({
+            "R": R,
+            "mean_loss": mean_loss,
+        })
         return analyze_result

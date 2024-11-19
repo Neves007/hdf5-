@@ -21,6 +21,8 @@ class ResultsAggregatorHandler():
         return max_r_rows
 
     def _analyze_result(self):
+        # todo 更新参数存档点 5：更新返回的分析数据，该数据作为可视化所需的数据。
+        #  位于 mydynalearn/visualize/visualizer/draw 中set_visualizer_data方法指定
         max_r_rows = self.find_max_r_rows()
         self.analyze_result = {
             "max_r_rows": max_r_rows,

@@ -5,7 +5,7 @@ class visualizerManager():
         self.analyze_result_output = analyze_result_output
         # todo 更新参数存档点 4：修改visualizer_name_list调整所需可视化任务
         self.visualizer_name_list = [
-            "LossK1K2"
+            "LossK1K2",
             "FigYtrureYpred"
         ]
 
