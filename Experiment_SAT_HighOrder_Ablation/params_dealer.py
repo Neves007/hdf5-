@@ -71,7 +71,7 @@ class ParamsDealer:
                 "MODEL_NAME":  ["SAT"],
                 "IS_WEIGHT": self.params["IS_WEIGHT"],
                 "DEVICE": self.params["DEVICE"],
-                "NUM_TEST": [1],
+                "NUM_TEST": self.params["NUM_TEST"],
                 "EPOCHS": self.params['EPOCHS']
             }
             fixed_params = {k: v for k, v in self.params.items() if
@@ -83,6 +83,7 @@ class ParamsDealer:
                                       "model",
                                       "IS_WEIGHT",
                                       "NUM_TEST",
+                                      "EPOCHS",
                                       "DEVICE"]}
             for key, value in fixed_params.items():
                 temp_param_dict = param_dict.copy()  # 每次循环中创建一个新的 param_dict
@@ -101,4 +102,4 @@ class ParamsDealer:
         params_specific_simplex = self.get_specific_simplex_params()
         params_real_simplex = self.get_real_simplex_params()
         # 根据标志选择返回高阶或全部组合
-        return params_graph + params_simplex + params_specific_simplex + params_real_simplex
+        return params_specific_simplex

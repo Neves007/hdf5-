@@ -6,7 +6,7 @@ Experiment_SAT_HighOrder_Ablation：使用 SAT 模型对高阶网络动力学进
 Experiment_SAT_vs_GNN_HighOrder：使用 SAT 模型和不同的 GNN 模型对高阶网络动力学进行实验，比较 SAT 模型与现有 GNN 模型在高阶动力学学习性能上的差异。
 '''
 # todo 更新参数存档点 1：修改包目录名为当前实验目录
-from Experiment_Compare_HighLow_AllModels.params_dealer import ParamsDealer
+from Experiment_SAT_HighOrder_Ablation.params_dealer import ParamsDealer
 from mydynalearn.experiments.experiment_manager import ExperimentManager
 
 ''' 所有参数
@@ -32,19 +32,17 @@ from mydynalearn.experiments.experiment_manager import ExperimentManager
 # todo 更新参数存档点 2：修改params_exp_dict的组成
 params_exp_dict = {
     # 实验参数
-    "graph_network": ["ER", "SF"],
-    "graph_dynamics": ["UAU", "CompUAU", "CoopUAU", "AsymUAU"],
     "simplicial_network": ["SCER", "SCSF"],
-    "simplicial_real_network":["CONFERENCE", "HIGHSCHOOL", "HOSPITAL", "WORKPLACE"],
     "simplicial_dynamics": ["SCUAU", "SCCompUAU", "SCCoopUAU", "SCAsymUAU"],
-    "model": ["GAT", "SAT"],  # 至少选一个
+    "model": ["SAT"],  # 至少选一个
     "IS_WEIGHT": [False],
     "DEVICE": ['cuda'],
-    # 具体参数
-    "NUM_TEST": [10],
     "EPOCHS": [30],
-    "NUM_SAMPLES": [10000],
-    "NUM_NODES":[1000]
+    "NUM_TEST": [10],
+    # 具体参数
+    "NUM_SAMPLES": [100,500,1000,5000,10000],
+    "T_INIT": [1,10,100,1000,10000],
+    "SEED_FREC": [0.005,0.01,0.1,0.2,0.3],
 }
 
 
